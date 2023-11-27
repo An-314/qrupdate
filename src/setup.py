@@ -1,13 +1,5 @@
 from numpy.distutils.core import setup, Extension
 
-# import os
-
-# blas_src_dir = "../OpenBLAS-0.3.24/OpenBLAS-0.3.24/lapack-netlib/BLAS/SRC"
-# blas_files = [
-#     os.path.join(blas_src_dir, f) for f in os.listdir(blas_src_dir) if f.endswith(".f")
-# ]
-
-
 # 列出所有的 Fortran 源文件
 src_files = [
     "caxcpy.f",
@@ -86,29 +78,11 @@ src_files = [
     "zqrtv1.f",
 ]
 
-# src_files = src_files + blas_files
-
-# OpenBLAS 库的路径
-openblas_lib_dir = "C:/Program Files/OpenBLAS-0.3.25-x64-64/lib"
-
 # 创建扩展模块，包括链接到 BLAS 和 LAPACK
 qrupdate_extension = Extension(
     name="qrupdate",
     sources=src_files,
-    library_dirs=[openblas_lib_dir],  # 添加库路径
-    libraries=["openblas"],  # 假设库文件名为 'libopenblas.a' 或 'libopenblas.dll.a'
-    extra_f77_compile_args=[
-        "-lopenblas",
-        '-L"C:/Program Files/OpenBLAS-0.3.25-x64-64/lib"',
-    ],
-    extra_f90_compile_args=[
-        "-lopenblas",
-        '-L"C:/Program Files/OpenBLAS-0.3.25-x64-64/lib"',
-    ],
-    # extra_f77_compile_args=[
-    #     '/LIBPATH:"C:\Program Files\OpenBLAS-0.3.25-x64-64\lib"',
-    #     "openblas.lib",
-    # ],
+    libraries=['blas','lapack'],
 )
 
 
@@ -120,3 +94,5 @@ setup(
     description="Python 接口的 qrupdate Fortran 库",
     ext_modules=[qrupdate_extension],
 )
+
+# python3 setup.py build --cpu-dispatch="max -avx512_spr" bdist > build_log.log 2>&1

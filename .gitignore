@@ -1,3 +1,6 @@
 build*
 *.swp
 src/build*
+src/dist*
+src/*.log
+src/*.egg-info

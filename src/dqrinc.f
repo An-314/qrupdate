@@ -45,7 +45,9 @@ c x (in)        the column being inserted
 c w (out)       a workspace vector of size k.
 c
       integer m,n,k,ldq,ldr,j
+c 这里应该是所谓的assumed shape array，导致后面出现的问题
       double precision Q(ldq,*),R(ldr,*),x(*),w(*)
+c 
       external dqrtv1,dqrqh,dqrot,dgqvec
       external xerbla,dcopy,ddot,daxpy,dscal,dnrm2
       double precision ddot,dnrm2,rx
