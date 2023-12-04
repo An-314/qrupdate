@@ -31,15 +31,15 @@ def dqhqr(m, n, R):
 
     for i in range(n):
         t = R[0, i]
-        ii = min(m, i + 1)
-        for j in range(ii - 1):
+        k = min(m, i + 1)
+        for j in range(k - 1):
             R[j, i], t = c[j] * t + s[j] * R[j + 1, i], c[j] * R[j + 1, i] - s[j] * t
-        if ii < m:
+        if k < m:
             # Generate next rotation
-            c[i], s[i], R[ii - 1, i] = lapack.dlartg(t, R[ii, i])
-            R[ii, i] = 0.0
+            c[i], s[i], R[k - 1, i] = lapack.dlartg(t, R[k, i])
+            R[k, i] = 0.0
         else:
-            R[ii - 1, i] = t
+            R[k - 1, i] = t
 
     return R, c, s
 

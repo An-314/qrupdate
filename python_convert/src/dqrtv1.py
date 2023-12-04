@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.linalg import lapack
 
-
 def dqrtv1(n, u):
     """
     Purpose:
@@ -16,19 +15,25 @@ def dqrtv1(n, u):
     Returns:
     u (1D array): Updated vector u.
     w (1D array): Rotation cosines.
+    
+    输入参数 向量u,向量长度n(可优化掉)
+    输出参数 新向量u(只有第一个分量非零,且保模长),
+             givens参数向量w(cos),v(sin)(长度n,实际只有前n-1个分量有效)
     """
-
-    if n <= 0:
+    n = len(u)
+    if n <= 1:
         return u, np.array([])
 
     w = np.zeros(n)
+    v = np.zeros(n)
     rr = u[n - 1]
 
     for i in range(n - 2, -1, -1):
         c, s, rr = lapack.dlartg(u[i], rr)
         w[i] = c
-        u[i + 1] = s
+        v[i] = s
+        u[i + 1] = 0
 
     u[0] = rr
 
-    return u, w
+    return u, w , v
