@@ -19,6 +19,13 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dqr1up(m,n,k,Q,ldq,R,ldr,u,v,w)
+!f2py intent(in) :: m,n,ldr
+!f2py intent(inout) :: R
+!f2py intent(inout) :: c,s
+!f2py dimension(ldr,*) :: R
+!f2py dimension(ldq,*) :: Q
+!f2py dimension(*) ::u,v
+!f2py dimension(*) :: w
 c purpose:      updates a QR factorization after rank-1 modification
 c               i.e., given a m-by-k orthogonal Q and m-by-n upper
 c               trapezoidal R, an m-vector u and n-vector v,

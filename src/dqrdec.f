@@ -19,6 +19,9 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dqrdec(m,n,k,Q,ldq,R,ldr,j,w)
+!f2py intent(in) :: m,n,k,ldq,ldr,j
+!f2py intent(inout) :: Q,R
+!f2py intent(inout) :: w
 c purpose:      updates a QR factorization after deleting
 c               a column.
 c               i.e., given an m-by-k orthogonal matrix Q, an k-by-n
@@ -45,7 +48,7 @@ c               1 <= j <= n.
 c w (o)         a workspace vector of size k-j.
 c
       integer m,n,k,ldq,ldr,j
-      double precision Q(ldq,*),R(ldr,*),w(*)
+      double precision Q(ldq,ldr),R(ldr,n),w(k)
       external xerbla,dcopy,dqhqr,dqrot
       integer info,i
 c quick return if possible.

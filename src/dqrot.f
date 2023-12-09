@@ -19,6 +19,11 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dqrot(dir,m,n,Q,ldq,c,s)
+!f2py intent(in) :: dir,m,n,ldq
+!f2py intent(inout) :: Q
+!f2py intent(in) :: c,s
+!f2py dimension(ldq,*) :: Q
+!f2py dimension(*) :: c,s
 c purpose:      Apply a sequence of inv. rotations from right
 c
 c arguments:

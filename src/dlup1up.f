@@ -19,6 +19,15 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dlup1up(m,n,L,ldl,R,ldr,p,u,v,w)
+!f2py intent(in) :: m,n,ldl,ldr
+!f2py intent(inout) :: L,R
+!f2py intent(in) :: p,u,v
+!f2py intent(inout) :: w
+!f2py dimension(ldl,*) :: L
+!f2py dimension(ldr,*) :: R
+!f2py dimension(*) :: u,w
+!f2py dimension(*) :: v
+!f2py dimension(*) :: p
 c purpose:      updates a row-pivoted LU factorization after rank-1 modification
 c               i.e., given an m-by-k lower-triangular matrix L with unit
 c               diagonal, a k-by-n upper-trapezoidal matrix R, and a

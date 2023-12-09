@@ -19,6 +19,10 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dqrinc(m,n,k,Q,ldq,R,ldr,j,x,w)
+!f2py intent(in) :: m,n,k,ldq,ldr,j
+!f2py intent(inout) :: Q,R
+!f2py intent(in) :: x
+!f2py intent(inout) :: w
 c purpose:      updates a QR factorization after inserting a new
 c               column.
 c               i.e., given an m-by-k orthogonal matrix Q, an m-by-n
@@ -45,11 +49,11 @@ c x (in)        the column being inserted
 c w (out)       a workspace vector of size k.
 c
       integer m,n,k,ldq,ldr,j
-c 这里应该是所谓的assumed shape array，导致后面出现的问题
-      double precision Q(ldq,*),R(ldr,*),x(*),w(*)
-c 
+      double precision Q(ldq,ldr),R(ldr,n+1),x(m),w(k)
+      ! double precision Q(ldq,*),R(ldr,*),x(m),w(k)
+
       external dqrtv1,dqrqh,dqrot,dgqvec
-      external xerbla,dcopy,ddot,daxpy,dscal,dnrm2
+      external xerbla,dcopy,ddot,daxpy,dscal,dnrm2,lsame
       double precision ddot,dnrm2,rx
       integer info,i,k1
       logical full

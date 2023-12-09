@@ -4,3 +4,4 @@ src/build*
 src/dist*
 src/*.log
 src/*.egg-info
+test-py/*.txt

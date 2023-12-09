@@ -19,6 +19,12 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dqrshc(m,n,k,Q,ldq,R,ldr,i,j,w)
+!f2py intent(in) :: m,n,k,ldq,ldr,i,j
+!f2py intent(inout) :: Q,R
+!f2py intent(inout) :: w
+!f2py dimension(ldq,*) :: Q
+!f2py dimension(ldr,*) :: R
+!f2py dimension(*) :: w
 c purpose:      updates a QR factorization after circular shift of
 c               columns.
 c               i.e., given an m-by-k orthogonal matrix Q, an k-by-n

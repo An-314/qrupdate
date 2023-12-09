@@ -19,6 +19,12 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dlu1up(m,n,L,ldl,R,ldr,u,v)
+!f2py intent(in) :: m,n,ldl,ldr
+!f2py intent(inout) :: L,R,u,v
+!f2py dimension(ldl,*) :: L
+!f2py dimension(ldr,*) :: R
+!f2py dimension(*) :: u
+!f2py dimension(*) :: v
 c purpose:      updates an LU factorization after rank-1 modification
 c               i.e., given an m-by-k lower-triangular matrix L with unit
 c               diagonal and a k-by-n upper-trapezoidal matrix R,

@@ -19,6 +19,11 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dgqvec(m,n,Q,ldq,u)
+!f2py intent(in) :: m,n,ldq
+!f2py intent(in) :: Q
+!f2py intent(inout) :: u
+!f2py dimension(ldq,*) :: Q
+!f2py dimension(*) :: u
 c purpose:      given an orthogonal m-by-n matrix Q, n < m, generates
 c               a vector u such that Q'*u = 0 and norm(u) = 1.
 c arguments:

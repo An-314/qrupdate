@@ -19,6 +19,11 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dchshx(n,R,ldr,i,j,w)
+!f2py intent(in) :: n,ldr,i,j
+!f2py intent(inout) :: R
+!f2py intent(inout) :: w
+!f2py dimension(ldr,*) :: R
+!f2py dimension(*) :: w
 c purpose:      given an upper triangular matrix R that is a Cholesky
 c               factor of a symmetric positive definite matrix A, i.e.
 c               A = R'*R, this subroutine updates R -> R1 so that

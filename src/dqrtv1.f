@@ -19,6 +19,11 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dqrtv1(n,u,w)
+!f2py intent(in) :: n
+!f2py intent(inout) :: u
+!f2py intent(inout) :: w
+!f2py dimension(*) :: u
+!f2py dimension(*) :: w
 c purpose:      generates a sequence of n-1 Givens rotations that
 c               eliminate all but the first element of a vector u.
 c arguments:

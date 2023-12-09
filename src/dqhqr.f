@@ -19,6 +19,11 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dqhqr(m,n,R,ldr,c,s)
+!f2py intent(in) :: m,n,ldr
+!f2py intent(inout) :: R
+!f2py intent(inout) :: c,s
+!f2py dimension(ldr,*) :: R
+!f2py dimension(*) :: c,s
 c purpose:      given an m-by-n upper Hessenberg matrix R, this
 c               subroutine updates R to upper trapezoidal form
 c               using min(m-1,n) Givens rotations.
