@@ -27,8 +27,8 @@ def dqrot(dir, m, n, Q, c, s):
     if forward:
         for i in range(n - 1):
             Q[:, i], Q[:, i + 1] = (
-                c[i] * Q[:, i] + s[i] * Q[:, i + 1],
-                c[i] * Q[:, i + 1] - s[i] * Q[:, i],
+                c[i] * Q[:, i] + Q[:, i + 1] * s[i],
+                c[i] * Q[:, i + 1] - Q[:, i] * s[i],
             )
     else:
         for i in range(n - 2, -1, -1):

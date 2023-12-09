@@ -18,7 +18,7 @@ def dqrdec(m, n, k, Q, R, j):
     j (int): The position of the deleted column in R.
     """
 
-    if m == 0 or n == 0 or j == n:
+    if m == 0 or n == 0 :
         return Q, R
 
     # Check arguments
@@ -30,8 +30,8 @@ def dqrdec(m, n, k, Q, R, j):
 
     # Retriangularize
     if j < k:
-        w = dqhqr(k - j + 1, n - j, R[j - 1 :, j - 1 :])
+        R[j - 1 :, j - 1 :], w , v = dqhqr.dqhqr(k - j + 1, n - j, R[j - 1 :, j - 1 :])
         # Apply rotations to Q
-        Q = dqrot("F", m, min(k, n) - j + 1, Q[:, j - 1 :], w, R[:, n - 1])
+        Q[:, j - 1 :] = dqrot.dqrot("F", m, min(k, n) - j + 1, Q[:, j - 1 :], w, v)
 
-    return Q, R
+    return Q , R[:,:n-1]
