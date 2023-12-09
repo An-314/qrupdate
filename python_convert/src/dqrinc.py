@@ -33,17 +33,20 @@ def dqrinc(m, n, k, Q, R, j, x):
 
     # Insert Q'*u into R
     if full:
+        k1 = k
         for i in range(k):
-            R[i, j - 1] = np.dot(Q[:, i], x)
+            R[i, j - 1] = np.dot((Q[:, i]).T, x)
     else:
+        k1 = k + 1
         Q_rows = Q.shape[0]
         Q = np.c_[Q, np.zeros(Q_rows)]
         R_columns = Q.shape[1]
         zero_row = np.zeros((1, R_columns))
         R = np.vstack((R, zero_row))
-        Q[:, k] = x.copy()
+        for t in range(m):
+            Q[t,k]=x[t]
         for i in range(k):
-            R[i, j - 1] = np.dot(Q[:, i], Q[:, k])
+            R[i, j - 1] = np.dot((Q[:, i]).T, Q[:, k])
             Q[:, k] -= R[i, j - 1] * Q[:, i]
         rx = np.linalg.norm(Q[:, k])
         R[k, j - 1] = rx
@@ -54,25 +57,10 @@ def dqrinc(m, n, k, Q, R, j, x):
 
     # Eliminate the spike
     if j <= k:
-        u, w = dqrtv1.dqrtv1(k - j + 2, R[j - 1 :, j - 1])
+        u, w ,v= dqrtv1.dqrtv1(k1 + 1 - j, R[j - 1 :, j - 1])
         # Apply rotations to R and Q
         if j <= n:
-            dqrqh.dqrqh(k - j + 2, n - j + 1, R[j - 1 :, j:], w, R[j:, j - 1])
-        dqrot.dqrot("B", m, k - j + 2, Q[:, j - 1 :], w, R[j:, j - 1])
+            dqrqh.dqrqh(k1 + 1 - j, n - j + 1, R[j - 1 :, j:], w, v)
+        dqrot.dqrot("B", m, k1 + 1 - j, Q[:, j - 1 :], w, v)
 
     return Q, R
-
-m = 8
-n = 2
-k = 2
-A = np.array([3,0,0,0,0,-1,2,-2,0,2,2,1,0,-2,1,2]).reshape(8,2)
-Q, R = np.linalg.qr(A)
-x = np.ones(8)
-B = np.insert(A, 1, x, axis=1)
-Q1, R1 = np.linalg.qr(B)
-
-Q2 , R2 = dqrinc(m, n, k, Q, R, 1, x)
-print(Q1)
-print(Q2)
-print(R1)
-print(R2)
