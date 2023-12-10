@@ -22,10 +22,10 @@ def dqrtv1(n, u):
     """
     n = len(u)
     if n <= 1:
-        return u, np.array([])
+        return u, np.array([]), np.array([])
 
-    w = np.zeros(n)
-    v = np.zeros(n)
+    w = np.zeros(n-1)
+    v = np.zeros(n-1)
     rr = u[n - 1]
 
     for i in range(n - 2, -1, -1):

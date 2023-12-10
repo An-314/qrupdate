@@ -57,10 +57,10 @@ def dqrinc(m, n, k, Q, R, j, x):
 
     # Eliminate the spike
     if j <= k:
-        u, w ,v= dqrtv1.dqrtv1(k1 + 1 - j, R[j - 1 :, j - 1])
+        R[j - 1 :, j - 1], w ,v= dqrtv1.dqrtv1(k1 + 1 - j, R[j - 1 :, j - 1])
         # Apply rotations to R and Q
         if j <= n:
-            dqrqh.dqrqh(k1 + 1 - j, n - j + 1, R[j - 1 :, j:], w, v)
-        dqrot.dqrot("B", m, k1 + 1 - j, Q[:, j - 1 :], w, v)
+            R[j - 1 :, j:] = dqrqh.dqrqh(k1 + 1 - j, n - j + 1, R[j - 1 :, j:], w, v)
+        Q[:, j - 1 :] = dqrot.dqrot("B", m, k1 + 1 - j, Q[:, j - 1 :], w, v)
 
     return Q, R
