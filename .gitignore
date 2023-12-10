@@ -1,3 +1,4 @@
 build*
 *.swp
 src/build*
+test-py/*.txt
