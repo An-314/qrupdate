@@ -2,7 +2,7 @@ import numpy as np
 import dqrtv1, dqrqh, dqrot, dgqvec
 
 
-def dqrinc(m, n, k, Q, R, j, x):
+def dqrinc(m, n, Q, R, j, x):
     """
     Purpose:
         Updates a QR factorization after inserting a new column.
@@ -18,6 +18,8 @@ def dqrinc(m, n, k, Q, R, j, x):
     j (int): The position of the new column in R1.
     x (1D array): The column being inserted.
     """
+
+    k = Q.shape[1]
 
     # Check arguments
     if m < 0 or n < 0 or (k != m and (k != n or n >= m)) or j < 1 or j > n + 1:

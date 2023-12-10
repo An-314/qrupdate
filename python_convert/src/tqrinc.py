@@ -1,27 +1,27 @@
 import numpy as np
 import dqrinc
 
-print("example1")
-a=np.mat([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]])
+print("不完全分解")
+a=np.mat([[1,2],[5,6],[9,10],[13,14]])
 print(a)
 
 q,r=np.linalg.qr(a)
 
 x = np.ones(4)
-q,r=dqrinc.dqrinc(4,4,4,q,r,3,x)
+q,r=dqrinc.dqrinc(4,2,q,r,2,x)
 print("updating")
 print(q)
 print(r)
 print(np.dot(q,r))
 
-print("example2")
-a=np.mat([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
+print("完全分解")
+a=np.mat([[1,2],[4,5],[7,8],[10,11]])
 print(a)
 
-q,r=np.linalg.qr(a)
+q,r=np.linalg.qr(a,mode='complete')
 
 x = np.ones(4)
-q,r=dqrinc.dqrinc(4,3,3,q,r,3,x)
+q,r=dqrinc.dqrinc(4,2,q,r,2,x)
 print("updating")
 print(q)
 print(r)
