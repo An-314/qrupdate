@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.linalg import blas, lapack
-import dqrtv, dqrqh
+import dqrtv1, dqrqh
 
 
 def dchinx(n, R, j, u):

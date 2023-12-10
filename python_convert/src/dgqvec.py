@@ -28,7 +28,7 @@ def dgqvec(m, n, Q):
     if m < 0 or n < 0 or Q.shape[0] < m or Q.shape[1] < n:
         raise ValueError("Invalid arguments in DGQVEC")
 
-    for j in range(n):
+    for j in range(m):
         # Probe j-th canonical unit vector
         u = np.zeros(m)
         u[j] = 1
@@ -44,3 +44,9 @@ def dgqvec(m, n, Q):
             return u
 
     raise RuntimeError("Fatal: impossible condition in DGQVEC")
+'''
+Q = np.array([1,0,0]).reshape(3,1)
+print(Q)
+u = dgqvec(3,1,Q)
+print(u)
+'''

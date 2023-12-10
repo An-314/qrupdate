@@ -2,3 +2,4 @@ build*
 *.swp
 src/build*
 test-py/*.txt
+python_convert/__pycache__
