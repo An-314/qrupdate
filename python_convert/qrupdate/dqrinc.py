@@ -22,6 +22,8 @@ def dqrinc(m, n, k, Q, R, j, x):
     x (1D array): The column being inserted.
     """
 
+    k = Q.shape[1]
+
     # Check arguments
     if m < 0 or n < 0 or (k != m and (k != n or n >= m)) or j < 1 or j > n + 1:
         raise ValueError("Invalid arguments in DQRINC")
