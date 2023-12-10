@@ -1,5 +1,7 @@
 build*
 *.swp
+*.txt
 src/build*
 test-py/*.txt
 python_convert/qrupdate/__pycache__
+python_convert/src/__pycache__

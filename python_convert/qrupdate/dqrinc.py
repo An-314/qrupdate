@@ -5,7 +5,7 @@ from .dqrot import dqrot
 from .dgqvec import dgqvec
 
 
-def dqrinc(m, n, k, Q, R, j, x):
+def dqrinc(m, n, Q, R, j, x):
     """
     Purpose:
         Updates a QR factorization after inserting a new column.

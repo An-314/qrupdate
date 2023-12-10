@@ -32,25 +32,25 @@ def test_dqrinc():
 
     print(Q.shape)
     print(R.shape)
-    print("修改之前的Q和R")
-    print(Q)
-    print(R)
+    # print("修改之前的Q和R")
+    # print(Q)
+    # print(R)
 
     # 调用 dqrinc 更新 QR 分解
     w = np.zeros(k).astype(np.float64)
-    Q1, R1 = qrupdate.dqrinc(m, n, k, Q, R, j, x)
+    Q1, R1 = qrupdate.dqrinc(m, n, Q, R, j, x)
 
     # 验证 QR 分解的正确性
     A_updated = np.hstack([A[:, : j - 1], x.reshape(-1, 1), A[:, j - 1 :]])
     # Q1, R1 = Q, R  # 更新后的 Q 和 R
     A_reconstructed = Q1 @ R1
 
-    print("修改之后的Q和R")
-    print(Q1)
-    print(R1)
+    # print("修改之后的Q和R")
+    # print(Q1)
+    # print(R1)
 
     np.savetxt("dqrinc.A_updated.txt", A_updated)
-    np.savetxt("qdrinc.A_reconstructed.txt", A_reconstructed)
+    np.savetxt("dqrinc.A_reconstructed.txt", A_reconstructed)
 
     if not np.allclose(A_updated, A_reconstructed):
         print("dqrinc_simp:QR update failed")
@@ -62,18 +62,18 @@ def test_dqrinc():
     Qp, Rp = np.linalg.qr(A, mode="complete")
     Qp = Qp.astype(np.float64)
     Rp = Rp.astype(np.float64)
-    # Rp = np.append(Rp, np.zeros((m, 1)), axis=1)
+    # Rp = np.append(Rp, np.zeros((m211, 1)), axis=1)
 
     print(Qp.shape)
     print(Rp.shape)
 
-    Q1, R1 = qrupdate.dqrinc(m, n, k, Qp, Rp, j, x)
+    Q1, R1 = qrupdate.dqrinc(m, n, Qp, Rp, j, x)
     A_updated = np.hstack([A[:, : j - 1], x.reshape(-1, 1), A[:, j - 1 :]])
     # Q1, R1 = Qp, Rp  # 更新后的 Q 和 R
     A_reconstructed = Q1 @ R1
 
     np.savetxt("dqrinc.Af_updated.txt", A_updated)
-    np.savetxt("qdrinc.Af_reconstructed.txt", A_reconstructed)
+    np.savetxt("dqrinc.Af_reconstructed.txt", A_reconstructed)
 
     if not np.allclose(A_updated, A_reconstructed):
         print("dqrinc_full:QR update failed")
@@ -104,8 +104,8 @@ def test_dqrdec():
     print(Rd.shape)
 
     # 调用 dqrdc 删除 QR 分解的列
-    w = np.zeros(k).astype(np.float64, order="F")
-    qrupdate.dqrdec(m, n, k, Qd, Rd, j)
+    w = np.zeros(k).astype(np.float64)
+    qrupdate.dqrdec(m, n, Qd, Rd, j)
 
     # 去掉Q和R的最后一列
     Qd = Qd[:, :-1]
@@ -131,13 +131,13 @@ def test_dqrdec():
     这时候出来的R的矩阵形状和原来一致，但最后一列不是空的（计算时候用到），需要手动去掉
     """
     Qdp, Rdp = np.linalg.qr(A, mode="complete")
-    Qdp = Qdp.astype(np.float64, order="F")
-    Rdp = Rdp.astype(np.float64, order="F")
+    Qdp = Qdp.astype(np.float64)
+    Rdp = Rdp.astype(np.float64)
 
     print(Qdp.shape)
     print(Rdp.shape)
 
-    qrupdate.dqrdec(m, n, k, Qdp, Rdp, j)
+    qrupdate.dqrdec(m, n, Qdp, Rdp, j)
 
     # 去掉R的最后一列
     Rdp = Rdp[:, :-1]
@@ -156,4 +156,4 @@ def test_dqrdec():
 
 # 执行测试
 test_dqrinc()
-# test_dqrdec()
+test_dqrdec()

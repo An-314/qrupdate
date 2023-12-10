@@ -2,7 +2,8 @@ import numpy as np
 from .dqhqr import dqhqr
 from .dqrot import dqrot
 
-def dqrdec(m, n, k, Q, R, j):
+
+def dqrdec(m, n, Q, R, j):
     """
     Purpose:
         Updates a QR factorization after deleting a column.
@@ -18,7 +19,9 @@ def dqrdec(m, n, k, Q, R, j):
     j (int): The position of the deleted column in R.
     """
 
-    if m == 0 or n == 0 :
+    k = Q.shape[1]
+
+    if m == 0 or n == 0:
         return Q, R
 
     # Check arguments
@@ -30,8 +33,8 @@ def dqrdec(m, n, k, Q, R, j):
 
     # Retriangularize
     if j < k:
-        R[j - 1 :, j - 1 :], w , v = dqhqr(k - j + 1, n - j, R[j - 1 :, j - 1 :])
+        R[j - 1 :, j - 1 :], w, v = dqhqr(k - j + 1, n - j, R[j - 1 :, j - 1 :])
         # Apply rotations to Q
         Q[:, j - 1 :] = dqrot("F", m, min(k, n) - j + 1, Q[:, j - 1 :], w, v)
 
-    return Q , R[:,:n-1]
+    return Q, R[:, : n - 1]
