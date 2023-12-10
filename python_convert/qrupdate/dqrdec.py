@@ -3,7 +3,7 @@ from .dqhqr import dqhqr
 from .dqrot import dqrot
 
 
-def dqrdec(m, n, Q, R, j):
+def dqrdec(Q, R, j):
     """
     Purpose:
         Updates a QR factorization after deleting a column.
@@ -11,15 +11,20 @@ def dqrdec(m, n, Q, R, j):
         trapezoidal matrix R, this subroutine updates Q -> Q1 and R -> R1.
 
     Arguments:
-    m (int): Number of rows of the matrix Q.
-    n (int): Number of columns of the matrix R.
-    k (int): Number of columns of Q, and rows of R.
     Q (2D array): Orthogonal matrix Q.
     R (2D array): Upper trapezoidal matrix R.
     j (int): The position of the deleted column in R.
     """
+    '''
+    m (int): Number of rows of the matrix Q.
+    n (int): Number of columns of the matrix R.
+    k (int): Number of columns of Q, and rows of R.
+    '''
 
+    m = Q.shape[0]
+    n = R.shape[1]
     k = Q.shape[1]
+
 
     if m == 0 or n == 0:
         return Q, R

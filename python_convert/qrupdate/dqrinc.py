@@ -5,7 +5,7 @@ from .dqrot import dqrot
 from .dgqvec import dgqvec
 
 
-def dqrinc(m, n, Q, R, j, x):
+def dqrinc( Q, R, j, x):
     """
     Purpose:
         Updates a QR factorization after inserting a new column.
@@ -13,15 +13,19 @@ def dqrinc(m, n, Q, R, j, x):
         trapezoidal matrix R, this subroutine updates Q -> Q1 and R -> R1.
 
     Arguments:
-    m (int): Number of rows of the matrix Q.
-    n (int): Number of columns of the matrix R.
-    k (int): Number of columns of Q, and rows of R.
     Q (2D array): Orthogonal matrix Q.
     R (2D array): Upper trapezoidal matrix R.
     j (int): The position of the new column in R1.
     x (1D array): The column being inserted.
     """
 
+    '''
+    m (int): Number of rows of the matrix Q.
+    n (int): Number of columns of the matrix R.
+    k (int): Number of columns of Q, and rows of R.
+    '''
+    m = Q.shape[0]
+    n = R.shape[1]
     k = Q.shape[1]
 
     # Check arguments
