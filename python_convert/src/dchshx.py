@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.linalg import blas
-import dqrtv1, dqrqh, dqhqr
+import dqrtv, dqrqh, dqhqr
 
 
 def dchshx(n, R, i, j):
@@ -45,7 +45,7 @@ def dchshx(n, R, i, j):
         R[:, j] = w
 
         # Eliminate the introduced spike and apply rotations to R
-        R[j:, j:], _ = dqrtv1(n - j, R[j:, j:], np.zeros(n - j))
+        R[j:, j:], _ = dqrtv(n - j, R[j:, j:], np.zeros(n - j))
         R[j:, j + 1 :], _ = dqrqh(
             n - j, n - j - 1, R[j:, j + 1 :], R.shape[1], np.zeros(n - j)
         )

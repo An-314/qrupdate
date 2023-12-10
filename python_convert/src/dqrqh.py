@@ -23,12 +23,12 @@ def dqrqh(m, n, R, c, s):
         raise ValueError("Invalid arguments in DQRQH")
 
     for i in range(n):
-        ii = min(m - 2, i)
-        t = R[ii + 1, i]
-        for j in range(ii, -1, -1):
-            R[j + 1, i], t = (
-                c[j] * t - s[j] * R[j, i],
-                c[j] * R[j, i] + s[j] * t,
+        k = min(m - 1, i) + 1
+        t = R[k, i]
+        for j in range(k, 0, -1):
+            R[j, i], t = (
+                c[j - 1] * t - s[j - 1] * R[j - 1, i],
+                c[j - 1] * R[j - 1, i] + s[j - 1] * t,
             )
         R[0, i] = t
 
