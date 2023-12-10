@@ -1,5 +1,8 @@
 import numpy as np
-import dqrtv1, dqrqh, dqrot, dgqvec
+from .dqrtv1 import dqrtv1
+from .dqrqh import dqrqh
+from .dqrot import dqrot
+from .dgqvec import dgqvec
 
 
 def dqrinc(m, n, k, Q, R, j, x):
@@ -51,16 +54,16 @@ def dqrinc(m, n, k, Q, R, j, x):
         rx = np.linalg.norm(Q[:, k])
         R[k, j - 1] = rx
         if rx == 0:
-            Q[:, k] = dgqvec.dgqvec(m, k, Q)
+            Q[:, k] = dgqvec(m, k, Q)
         else:
             Q[:, k] /= rx
 
     # Eliminate the spike
     if j <= k:
-        R[j - 1 :, j - 1], w ,v= dqrtv1.dqrtv1(k1 + 1 - j, R[j - 1 :, j - 1])
+        R[j - 1 :, j - 1], w ,v= dqrtv1(k1 + 1 - j, R[j - 1 :, j - 1])
         # Apply rotations to R and Q
         if j <= n:
-            R[j - 1 :, j:] = dqrqh.dqrqh(k1 + 1 - j, n - j + 1, R[j - 1 :, j:], w, v)
-        Q[:, j - 1 :] = dqrot.dqrot("B", m, k1 + 1 - j, Q[:, j - 1 :], w, v)
+            R[j - 1 :, j:] = dqrqh(k1 + 1 - j, n - j + 1, R[j - 1 :, j:], w, v)
+        Q[:, j - 1 :] = dqrot("B", m, k1 + 1 - j, Q[:, j - 1 :], w, v)
 
     return Q, R
