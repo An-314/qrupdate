@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.linalg import blas, lapack
-import dch1up, dqrqh, dqhqr, dqrot, dqrtv1
+import dch1up, dqrqh, dqhqr, dqrot, dqrtv
 
 
 def dqr1up(m, n, k, Q, R, u, v):
@@ -38,7 +38,7 @@ def dqr1up(m, n, k, Q, R, u, v):
             u -= w[i] * Q[:, i]
 
     # Generate rotations to eliminate Q'*u
-    w, _ = dqrtv1(k, w)
+    w, _ = dqrtv(k, w)
 
     # Apply rotations to R
     dqrqh(k, n, R, w, w[1:k])
