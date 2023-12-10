@@ -23,9 +23,9 @@ def dqrqh(m, n, R, c, s):
         raise ValueError("Invalid arguments in DQRQH")
 
     for i in range(n):
-        ii = min(m - 1, i)
-        t = R[ii, i]
-        for j in range(ii, 0, -1):
+        k = min(m - 1, i) + 1
+        t = R[k, i]
+        for j in range(k, 0, -1):
             R[j, i], t = (
                 c[j - 1] * t - s[j - 1] * R[j - 1, i],
                 c[j - 1] * R[j - 1, i] + s[j - 1] * t,
@@ -33,3 +33,9 @@ def dqrqh(m, n, R, c, s):
         R[0, i] = t
 
     return R
+'''
+A = np.array([[-4.24264069 , 0.        ],[ 0.  ,       -4.24264069],[ 0.      ,    0.        ]]).reshape(3,2)
+c = [-0.666666,0,0]
+s = [0.745356,1,0]
+print(dqrqh(3,2,A,c,s))
+'''
