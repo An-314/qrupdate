@@ -47,7 +47,7 @@ def dqrinc(m, n, k, Q, R, j, x):
         zero_row = np.zeros((1, R_columns))
         R = np.vstack((R, zero_row))
         for t in range(m):
-            Q[t,k]=x[t]
+            Q[t, k] = x[t]
         for i in range(k):
             R[i, j - 1] = np.dot((Q[:, i]).T, Q[:, k])
             Q[:, k] -= R[i, j - 1] * Q[:, i]
@@ -60,7 +60,7 @@ def dqrinc(m, n, k, Q, R, j, x):
 
     # Eliminate the spike
     if j <= k:
-        R[j - 1 :, j - 1], w ,v= dqrtv1(k1 + 1 - j, R[j - 1 :, j - 1])
+        R[j - 1 :, j - 1], w, v = dqrtv1(k1 + 1 - j, R[j - 1 :, j - 1])
         # Apply rotations to R and Q
         if j <= n:
             R[j - 1 :, j:] = dqrqh(k1 + 1 - j, n - j + 1, R[j - 1 :, j:], w, v)

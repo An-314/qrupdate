@@ -10,10 +10,10 @@ import qrupdate
 
 def test_dqrinc():
     # 设置测试参数
-    m, n = 60, 40
+    m, n = 6, 4
     k = n
     ldq, ldr = m, n + 1
-    j = 26  # 插入新列的位置
+    j = 2  # 插入新列的位置
 
     # 生成随机矩阵 A 和列向量 x
     A = np.random.rand(m, n).astype(np.float64)
@@ -21,27 +21,33 @@ def test_dqrinc():
 
     ##### 简略QR分解测试 #####
     """
-    简要QR分解的Q和R矩阵输入时，需要预留R和Q的空行和空列
-    Q需要输入m*(n+1)的矩阵，R需要输入(n+1)*(n+1)的矩阵
+    简要QR分解的Q和R矩阵输入时，python版本不需要预留R和Q的空行和空列
     """
     Q, R = np.linalg.qr(A)
     Q = Q.astype(np.float64)
     R = R.astype(np.float64)
-    R = np.append(R, np.zeros((n, 1)), axis=1)
-    R = np.append(R, np.zeros((1, n + 1)), axis=0)
-    Q = np.append(Q, np.zeros((m, 1)), axis=1)
+    # R = np.append(R, np.zeros((n, 1)), axis=1)
+    # R = np.append(R, np.zeros((1, n + 1)), axis=0)
+    # Q = np.append(Q, np.zeros((m, 1)), axis=1)
 
     print(Q.shape)
     print(R.shape)
+    print("修改之前的Q和R")
+    print(Q)
+    print(R)
 
     # 调用 dqrinc 更新 QR 分解
     w = np.zeros(k).astype(np.float64)
-    qrupdate.dqrinc(m, n, k, Q, R, j, x)
+    Q1, R1 = qrupdate.dqrinc(m, n, k, Q, R, j, x)
 
     # 验证 QR 分解的正确性
     A_updated = np.hstack([A[:, : j - 1], x.reshape(-1, 1), A[:, j - 1 :]])
-    Q1, R1 = Q, R  # 更新后的 Q 和 R
+    # Q1, R1 = Q, R  # 更新后的 Q 和 R
     A_reconstructed = Q1 @ R1
+
+    print("修改之后的Q和R")
+    print(Q1)
+    print(R1)
 
     np.savetxt("dqrinc.A_updated.txt", A_updated)
     np.savetxt("qdrinc.A_reconstructed.txt", A_reconstructed)
@@ -51,20 +57,19 @@ def test_dqrinc():
 
     ##### 完整QR分解测试 #####
     """
-    完整QR分解的Q和R矩阵输入时，需要预留R的空列
-    Q需要输入m*m的矩阵，R需要输入m*(n+1)的矩阵
+    完整QR分解的Q和R矩阵输入时，不需要预留R的空列
     """
     Qp, Rp = np.linalg.qr(A, mode="complete")
     Qp = Qp.astype(np.float64)
     Rp = Rp.astype(np.float64)
-    Rp = np.append(Rp, np.zeros((m, 1)), axis=1)
+    # Rp = np.append(Rp, np.zeros((m, 1)), axis=1)
 
     print(Qp.shape)
     print(Rp.shape)
 
-    qrupdate.dqrinc(m, n, k, Qp, Rp, j, x)
+    Q1, R1 = qrupdate.dqrinc(m, n, k, Qp, Rp, j, x)
     A_updated = np.hstack([A[:, : j - 1], x.reshape(-1, 1), A[:, j - 1 :]])
-    Q1, R1 = Qp, Rp  # 更新后的 Q 和 R
+    # Q1, R1 = Qp, Rp  # 更新后的 Q 和 R
     A_reconstructed = Q1 @ R1
 
     np.savetxt("dqrinc.Af_updated.txt", A_updated)
@@ -151,4 +156,4 @@ def test_dqrdec():
 
 # 执行测试
 test_dqrinc()
-test_dqrdec()
+# test_dqrdec()
