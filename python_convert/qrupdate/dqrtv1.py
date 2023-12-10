@@ -1,23 +1,28 @@
 import numpy as np
 from scipy.linalg import lapack
 
-
 def dqrtv1(n, u):
     """
     Purpose:
         Generates a sequence of n-1 Givens rotations that eliminate all
         but the first element of a vector u.
+
     Arguments:
     n (int): The length of the vector u.
     u (1D array): On entry, the vector u. On exit, u[1:n] contains the
                   rotation sines, u[0] contains the remaining element.
+
     Returns:
     u (1D array): Updated vector u.
     w (1D array): Rotation cosines.
+    
+    输入参数 向量u,向量长度n(可优化掉)
+    输出参数 新向量u(只有第一个分量非零,且保模长),
+             givens参数向量w(cos),v(sin)(长度n,实际只有前n-1个分量有效)
     """
-
-    if n <= 0:
-        return u, np.array([])
+    n = len(u)
+    if n <= 1:
+        return u, np.array([]), np.array([])
 
     w = np.zeros(n-1)
     v = np.zeros(n-1)
@@ -31,8 +36,4 @@ def dqrtv1(n, u):
 
     u[0] = rr
 
-    return u, v, w
-'''
-u = np.array([4,3,0])
-print(dqrtv1(3,u))
-'''
+    return u, w , v

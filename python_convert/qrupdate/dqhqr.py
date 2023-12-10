@@ -48,8 +48,6 @@ def dqhqr(m, n, R):
             R[k - 1, i] = t
 
     return R, c, s
-'''
-A = np.array([4,0,0,3,0,0,0,0,0]).reshape(3,3)
-print(dqhqr(3,3,A))
-'''
+
+
 # `scipy.linalg.lapack.dlartg` 用于生成 Givens 旋转的余弦和正弦值。
