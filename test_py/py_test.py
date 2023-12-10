@@ -150,5 +150,5 @@ def test_dqrdec():
 
 
 # 执行测试
-# test_dqrinc()
+test_dqrinc()
 test_dqrdec()
