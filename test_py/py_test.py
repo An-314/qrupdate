@@ -38,7 +38,7 @@ def test_dqrinc():
 
     # 调用 dqrinc 更新 QR 分解
     w = np.zeros(k).astype(np.float64)
-    Q1, R1 = qrupdate.dqrinc(m, n, Q, R, j, x)
+    Q1, R1 = qrupdate.dqrinc(Q, R, j, x)
 
     # 验证 QR 分解的正确性
     A_updated = np.hstack([A[:, : j - 1], x.reshape(-1, 1), A[:, j - 1 :]])
@@ -67,7 +67,7 @@ def test_dqrinc():
     print(Qp.shape)
     print(Rp.shape)
 
-    Q1, R1 = qrupdate.dqrinc(m, n, Qp, Rp, j, x)
+    Q1, R1 = qrupdate.dqrinc(Qp, Rp, j, x)
     A_updated = np.hstack([A[:, : j - 1], x.reshape(-1, 1), A[:, j - 1 :]])
     # Q1, R1 = Qp, Rp  # 更新后的 Q 和 R
     A_reconstructed = Q1 @ R1
@@ -105,7 +105,7 @@ def test_dqrdec():
 
     # 调用 dqrdc 删除 QR 分解的列
     w = np.zeros(k).astype(np.float64)
-    qrupdate.dqrdec(m, n, Qd, Rd, j)
+    qrupdate.dqrdec(Qd, Rd, j)
 
     # 去掉Q和R的最后一列
     Qd = Qd[:, :-1]
@@ -137,7 +137,7 @@ def test_dqrdec():
     print(Qdp.shape)
     print(Rdp.shape)
 
-    qrupdate.dqrdec(m, n, Qdp, Rdp, j)
+    qrupdate.dqrdec(Qdp, Rdp, j)
 
     # 去掉R的最后一列
     Rdp = Rdp[:, :-1]
