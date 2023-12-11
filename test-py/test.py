@@ -1,7 +1,9 @@
 import numpy as np
 import sys
 sys.path.append('/home/anzrew/Documents/qrupdate/src/build/lib.linux-x86_64-cpython-310')
-
+import matplotlib
+matplotlib.use('Agg')  # 设置非交互式后端
+import matplotlib.pyplot as plt
 import qrupdate
 
 print(qrupdate.__doc__)
@@ -10,10 +12,10 @@ print(qrupdate.dqrdec.__doc__)
 
 def test_dqrinc():
     # 设置测试参数
-    m, n = 6000, 4000
+    m, n = 60, 40
     k = n
     ldq, ldr = m, n + 1
-    j = 2676  # 插入新列的位置
+    j = 26  # 插入新列的位置
 
     # 生成随机矩阵 A 和列向量 x
     A = np.random.rand(m, n).astype(np.float64, order="F")
@@ -36,7 +38,7 @@ def test_dqrinc():
 
     # 调用 dqrinc 更新 QR 分解
     w = np.zeros(k).astype(np.float64, order="F")
-    qrupdate.dqrinc(Q, R, j, x, w)
+    qrupdate.dqrinc(k, Q, R, j, x)
     
 
     # 验证 QR 分解的正确性
@@ -59,7 +61,7 @@ def test_dqrinc():
     print(Qp.shape)
     print(Rp.shape)
 
-    qrupdate.dqrinc(Qp, Rp, j, x, w)
+    qrupdate.dqrinc(k, Qp, Rp, j, x)
 
     A_updated = np.hstack([A[:, :j-1], x.reshape(-1, 1), A[:, j-1:]])
     Q1, R1 = Qp, Rp  # 更新后的 Q 和 R
@@ -93,7 +95,7 @@ def test_dqrdec():
 
     # 调用 dqrdc 删除 QR 分解的列
     w = np.zeros(k).astype(np.float64, order="F")
-    qrupdate.dqrdec(m, Qd, Rd, j, w)
+    qrupdate.dqrdec(Qd, Rd, j)
 
     # 去掉Q和R的最后一列
     Qd = Qd[:, :-1]
@@ -124,7 +126,7 @@ def test_dqrdec():
     print(Qdp.shape)
     print(Rdp.shape)
 
-    qrupdate.dqrdec(m, Qdp, Rdp, j, w)
+    qrupdate.dqrdec(Qdp, Rdp, j)
 
     # 去掉R的最后一列
     Rdp = Rdp[:, :-1]
@@ -139,7 +141,54 @@ def test_dqrdec():
 
     # assert np.allclose(A_updated, A_reconstructed), "QR update failed"
 
+def updating_test_dqrinc():
+    m, n, begin= 6000, 5, 5
+    # 生成随机矩阵 A 
+    A_updated = np.random.rand(m, n).astype(np.float64, order="F")
+    # 建一个表格储存误差
+    errors = np.zeros((m - begin, 1))
+    ##### 简略QR分解测试 #####
+    # 计算QR分解
+    Q, R = np.linalg.qr(A_updated)
+    Q = Q.astype(np.float64, order="F")
+    R = R.astype(np.float64, order="F")
+    for n in range(begin, m):
+        k = n
+        j = n + 1  # 插入新列的位置
+
+        # 生成随机列向量 x
+        x = np.random.rand(m).astype(np.float64, order="F")
+        
+        R = np.append(R, np.zeros((n, 1)), axis=1)
+        R = np.append(R, np.zeros((1 , n+1)), axis=0)
+        Q = np.append(Q, np.zeros((m, 1)), axis=1)
+        
+        print(f"Q.shape{Q.shape}")
+        print(f"R.shape{R.shape}")
+
+        # 调用 dqrinc 更新 QR 分解
+        qrupdate.dqrinc(k, Q, R, j, x)
+        
+        # 验证 QR 分解的正确性
+        A_updated = np.hstack([A_updated[:, :], x.reshape(-1, 1)])
+        Q1, R1 = Q, R  # 更新后的 Q 和 R
+        A_reconstructed = Q1 @ R1
+        print("finish1")
+
+        # 计算误差
+        error = np.linalg.norm(A_updated - A_reconstructed)
+        errors[n-5] = error
+        print("finish2")
+    
+    # print(errors)
+    plt.plot(errors)
+    plt.xlabel("n")
+    plt.ylabel("error")
+    plt.savefig('error_plot.png')
+
+        
 
 # 执行测试
-test_dqrinc()
+# test_dqrinc()
 # test_dqrdec()
+updating_test_dqrinc()

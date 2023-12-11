@@ -18,11 +18,10 @@ c You should have received a copy of the GNU General Public License
 c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
-      subroutine dqrinc(m,n,k,Q,ldq,R,ldr,j,x,w)
+      subroutine dqrinc(m,n,k,Q,ldq,R,ldr,j,x)
 !f2py intent(in) :: m,n,k,ldq,ldr,j
 !f2py intent(inout) :: Q,R
 !f2py intent(in) :: x
-!f2py intent(inout) :: w
 c purpose:      updates a QR factorization after inserting a new
 c               column.
 c               i.e., given an m-by-k orthogonal matrix Q, an m-by-n
@@ -48,15 +47,20 @@ c j (in)        the position of the new column in R1
 c x (in)        the column being inserted
 c w (out)       a workspace vector of size k.
 c
+      ! integer m,n,k,ldq,ldr,j
+      ! double precision Q(ldq,ldr),R(ldr,n+1),x(m),w(k)
+      ! double precision Q(ldq,*),R(ldr,*),x(m),w(k)
       integer m,n,k,ldq,ldr,j
       double precision Q(ldq,ldr),R(ldr,n+1),x(m),w(k)
-      ! double precision Q(ldq,*),R(ldr,*),x(m),w(k)
-
       external dqrtv1,dqrqh,dqrot,dgqvec
       external xerbla,dcopy,ddot,daxpy,dscal,dnrm2,lsame
       double precision ddot,dnrm2,rx
       integer info,i,k1
       logical full
+
+      do i = 1, k
+        w(i) = 0.0d0
+      end do
 c quick return if possible.
       if (m == 0) return
 c check arguments.
