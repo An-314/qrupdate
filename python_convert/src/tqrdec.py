@@ -10,7 +10,7 @@ print(q)
 print(r)
 print(np.dot(q,r))
 
-q,r=dqrdec.dqrdec(4,3,3,q,r,3)
+q,r=dqrdec.dqrdec(4,3,3,q,r,2)
 print("updating")
 print(q)
 print(r)

@@ -37,9 +37,18 @@ def dqrdec(Q, R, j):
     R[:, j - 1 : n - 1] = R[:, j:n]
 
     # Retriangularize
-    if j < k:
-        R[j - 1 :, j - 1 :], w, v = dqhqr(k - j + 1, n - j, R[j - 1 :, j - 1 :])
-        # Apply rotations to Q
-        Q[:, j - 1 :] = dqrot("F", m, min(k, n) - j + 1, Q[:, j - 1 :], w, v)
+    if k==m:
+        if j < k:
+            R[j - 1 :, j - 1 :], w , v = dqhqr.dqhqr(k - j + 1, n - j, R[j - 1 :, j - 1 :])
+            # Apply rotations to Q
+            Q[:, j - 1 :] = dqrot.dqrot("F", m, min(k, n) - j + 1, Q[:, j - 1 :], w, v)
 
-    return Q, R[:, : n - 1]
+        return Q , R[:,:n-1]
+    
+    else:
+        if j < k:
+            R[j - 1 : n - 1, j - 1 : n - 1], w , v = dqhqr.dqhqr(n - j , n - j, R[j - 1 : n - 1 , j - 1 : n - 1])
+            # Apply rotations to Q
+            Q[:, j - 1 : n - 1] = dqrot.dqrot("F", m, n - j , Q[:, j - 1 : n - 1], w, v)
+
+        return Q[:,:n-1] , R[:n-1,:n-1]
