@@ -5,12 +5,16 @@ import sys
 
 sys.path.append("../python_convert/")
 
+import matplotlib.pyplot as plt
+
+import time
+
 import qrupdate
 
 
 def test_dqrinc():
     # 设置测试参数
-    m, n = 6, 4
+    m, n = 6000, 4000
     k = n
     ldq, ldr = m, n + 1
     j = 2  # 插入新列的位置
@@ -36,9 +40,15 @@ def test_dqrinc():
     # print(Q)
     # print(R)
 
+    time_start = time.time()
+
     # 调用 dqrinc 更新 QR 分解
     w = np.zeros(k).astype(np.float64)
     Q1, R1 = qrupdate.dqrinc(Q, R, j, x)
+
+    time_end = time.time()
+
+    print("dqrinc time cost", time_end - time_start, "s")
 
     # 验证 QR 分解的正确性
     A_updated = np.hstack([A[:, : j - 1], x.reshape(-1, 1), A[:, j - 1 :]])
@@ -154,6 +164,50 @@ def test_dqrdec():
         print("dqrdec_full:QR update failed")
 
 
+def updating_test_dqrinc():
+    m, n, begin = 6000, 5, 5
+    # 生成随机矩阵 A
+    A_updated = np.random.rand(m, n).astype(np.float64)
+    # 建一个表格储存误差
+    errors = np.zeros((m - begin, 1))
+    ##### 简略QR分解测试 #####
+    # 计算QR分解
+    Q, R = np.linalg.qr(A_updated)
+    Q = Q.astype(np.float64)
+    R = R.astype(np.float64)
+    for n in range(begin, m):
+        k = n
+        j = n + 1  # 插入新列的位置
+
+        # 生成随机列向量 x
+        x = np.random.rand(m).astype(np.float64)
+
+        print(f"Q.shape{Q.shape}")
+        print(f"R.shape{R.shape}")
+
+        # 调用 dqrinc 更新 QR 分解
+        Q1, R1 = qrupdate.dqrinc(Q, R, j, x)
+        Q = Q1
+        R = R1
+
+        # 验证 QR 分解的正确性
+        A_updated = np.hstack([A_updated[:, :], x.reshape(-1, 1)])
+        A_reconstructed = Q1 @ R1
+        print("finish1")
+
+        # 计算误差
+        error = np.linalg.norm(A_updated - A_reconstructed)
+        errors[n - 5] = error
+        print("finish2")
+
+    print(errors)
+    # plt.plot(errors)
+    # plt.xlabel("n")
+    # plt.ylabel("error")
+    plt.savefig("error_plot1.png")
+
+
 # 执行测试
 test_dqrinc()
-test_dqrdec()
+# test_dqrdec()
+# updating_test_dqrinc()
