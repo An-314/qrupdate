@@ -12,10 +12,10 @@ print(qrupdate.dqrdec.__doc__)
 
 def test_dqrinc():
     # 设置测试参数
-    m, n = 60, 40
+    m, n = 6, 4
     k = n
     ldq, ldr = m, n + 1
-    j = 26  # 插入新列的位置
+    j = 2  # 插入新列的位置
 
     # 生成随机矩阵 A 和列向量 x
     A = np.random.rand(m, n).astype(np.float64, order="F")
@@ -71,10 +71,10 @@ def test_dqrinc():
 
 def test_dqrdec():
     # 设置测试参数
-    m, n = 60, 40
+    m, n = 8, 6
     k = n
     ldq, ldr = m, n + 1
-    j = 28  # 删除列的位置
+    j = 2 # 删除列的位置
 
     # 生成随机矩阵 A 和列向量 x
     A = np.random.rand(m, n).astype(np.float64, order="F")
@@ -142,7 +142,7 @@ def test_dqrdec():
     # assert np.allclose(A_updated, A_reconstructed), "QR update failed"
 
 def updating_test_dqrinc():
-    m, n, begin= 6000, 5, 5
+    m, n, begin= 6, 5, 5
     # 生成随机矩阵 A 
     A_updated = np.random.rand(m, n).astype(np.float64, order="F")
     # 建一个表格储存误差
@@ -163,8 +163,8 @@ def updating_test_dqrinc():
         R = np.append(R, np.zeros((1 , n+1)), axis=0)
         Q = np.append(Q, np.zeros((m, 1)), axis=1)
         
-        print(f"Q.shape{Q.shape}")
-        print(f"R.shape{R.shape}")
+        # print(f"Q.shape{Q.shape}")
+        # print(f"R.shape{R.shape}")
 
         # 调用 dqrinc 更新 QR 分解
         qrupdate.dqrinc(k, Q, R, j, x)
@@ -173,22 +173,27 @@ def updating_test_dqrinc():
         A_updated = np.hstack([A_updated[:, :], x.reshape(-1, 1)])
         Q1, R1 = Q, R  # 更新后的 Q 和 R
         A_reconstructed = Q1 @ R1
-        print("finish1")
+        # print("finish1")
+
+        # 验证Q的正交性
+        Q1TQ1 = Q1.T @ Q1
 
         # 计算误差
-        error = np.linalg.norm(A_updated - A_reconstructed)
+        # error = np.linalg.norm(A_updated - A_reconstructed)
+        error = np.linalg.norm(Q1TQ1 - np.eye(n + 1))
         errors[n-5] = error
-        print("finish2")
+        # print("finish2")
     
     # print(errors)
+    print(errors[-1])
     plt.plot(errors)
     plt.xlabel("n")
     plt.ylabel("error")
-    plt.savefig('error_plot.png')
+    plt.savefig('error_plot_Q.png')
 
         
 
 # 执行测试
 # test_dqrinc()
-# test_dqrdec()
-updating_test_dqrinc()
+test_dqrdec()
+# updating_test_dqrinc()
