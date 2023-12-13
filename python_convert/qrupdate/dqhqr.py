@@ -1,4 +1,4 @@
-import numpy as np
+import cupy as np
 from scipy.linalg import lapack
 
 
@@ -29,13 +29,11 @@ def dqhqr(m, n, R):
     c = np.zeros(min_mn)
     s = np.zeros(min_mn)
 
-
-    
     t = R[0, 0]
     k = min(m, 1)
     c[0], s[0], R[k - 1, 0] = lapack.dlartg(t, R[k, 0])
     R[k, 0] = 0.0
-    for i in range(1,n):
+    for i in range(1, n):
         t = R[0, i]
         k = min(m, i + 1)
         for j in range(k - 1):

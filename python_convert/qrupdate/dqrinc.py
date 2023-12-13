@@ -1,11 +1,11 @@
-import numpy as np
+import cupy as np
 from .dqrtv1 import dqrtv1
 from .dqrqh import dqrqh
 from .dqrot import dqrot
 from .dgqvec import dgqvec
 
 
-def dqrinc( Q, R, j, x):
+def dqrinc(Q, R, j, x):
     """
     Purpose:
         Updates a QR factorization after inserting a new column.
@@ -19,11 +19,11 @@ def dqrinc( Q, R, j, x):
     x (1D array): The column being inserted.
     """
 
-    '''
+    """
     m (int): Number of rows of the matrix Q.
     n (int): Number of columns of the matrix R.
     k (int): Number of columns of Q, and rows of R.
-    '''
+    """
     m = Q.shape[0]
     n = R.shape[1]
     k = Q.shape[1]

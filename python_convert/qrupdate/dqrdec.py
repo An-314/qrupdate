@@ -1,4 +1,4 @@
-import numpy as np
+import cupy as np
 from .dqhqr import dqhqr
 from .dqrot import dqrot
 
@@ -15,16 +15,15 @@ def dqrdec(Q, R, j):
     R (2D array): Upper trapezoidal matrix R.
     j (int): The position of the deleted column in R.
     """
-    '''
+    """
     m (int): Number of rows of the matrix Q.
     n (int): Number of columns of the matrix R.
     k (int): Number of columns of Q, and rows of R.
-    '''
+    """
 
     m = Q.shape[0]
     n = R.shape[1]
     k = Q.shape[1]
-
 
     if m == 0 or n == 0:
         return Q, R
