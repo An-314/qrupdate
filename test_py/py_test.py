@@ -92,7 +92,7 @@ def test_dqrinc():
 
 def test_dqrdec():
     # 设置测试参数
-    m, n = 10, 5
+    m, n = 6, 5
     k = n
     ldq, ldr = m, n + 1
     j = 2  # 删除列的位置
@@ -121,9 +121,9 @@ def test_dqrdec():
     print(Qd.shape)
     print(Rd.shape)
 
-    # 去掉Q和R的最后一列
-    Qd = Qd[:, :-1]
-    Rd = Rd[:-1, :]
+    # # 去掉Q和R的最后一列
+    # Qd = Qd[:, :-1]
+    # Rd = Rd[:-1, :]
 
     print(Qd.shape)
     print(Rd.shape)
@@ -172,7 +172,7 @@ def test_dqrdec():
 
 
 def updating_test_dqrinc():
-    m, n, begin = 6000, 5, 5
+    m, n, begin = 3000, 5, 5
     # 生成随机矩阵 A
     A_updated = cp.random.rand(m, n).astype(cp.float64)
     # 建一个表格储存误差
@@ -199,20 +199,27 @@ def updating_test_dqrinc():
 
         # 验证 QR 分解的正确性
         A_updated = cp.hstack([A_updated[:, :], x.reshape(-1, 1)])
-        A_reconstructed = Q1 @ R1
+        # A_reconstructed = Q1 @ R1
         # print("finish1")
-
-        # 计算误差
-        error = cp.linalg.norm(A_updated - A_reconstructed)
-        errors[n - 5] = error
+        # _, R2 = cp.linalg.qr(A_updated)
+        ATA = cp.dot(A_updated.T, A_updated)
+        RTR = cp.dot(R1.T, R1)
         print(f"finish:{n}")
 
+        # 计算误差
+        # error = cp.linalg.norm(A_updated - A_reconstructed)
+        # error = cp.linalg.norm(Q1.T @ Q1 - cp.eye(n + 1))
+        # error = cp.linalg.norm(R2 - R1)
+        error = cp.linalg.norm(ATA - RTR)
+        errors[n - 5] = error
+        # print(f"finish:{n}")
+
     errors = cp.asnumpy(errors)
-    print(errors)
+    # print(errors)
     plt.plot(errors)
     plt.xlabel("n")
     plt.ylabel("error")
-    plt.savefig("error_plot.png")
+    plt.savefig("error_plot_R_3000_1.png")
 
 
 def updating_test_dqrincAndDqrdec():
@@ -281,6 +288,6 @@ def updating_test_dqrincAndDqrdec():
 
 # 执行测试
 # test_dqrinc()
-test_dqrdec()
-# updating_test_dqrinc()
+# test_dqrdec()
+updating_test_dqrinc()
 # updating_test_dqrincAndDqrdec()
