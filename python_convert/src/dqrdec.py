@@ -39,9 +39,9 @@ def dqrdec(m, n, k, Q, R, j):
     
     else:
         if j < k:
-            R[j - 1 : n - 1, j - 1 : n - 1], w , v = dqhqr.dqhqr(n - j , n - j, R[j - 1 : n - 1 , j - 1 : n - 1])
+            R[j - 1 : n , j - 1 : n - 1], w , v = dqhqr.dqhqr(n - j + 1 , n - j, R[j - 1 : n , j - 1 : n - 1])
             # Apply rotations to Q
-            Q[:, j - 1 : n - 1] = dqrot.dqrot("F", m, n - j , Q[:, j - 1 : n - 1], w, v)
+            Q[:, j - 1 : n ] = dqrot.dqrot("F", m, n - j + 1 , Q[:, j - 1 : n ], w, v)
 
         return Q[:,:n-1] , R[:n-1,:n-1]
     
