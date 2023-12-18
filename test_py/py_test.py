@@ -129,7 +129,7 @@ def test_dqrdec():
     print(Rd.shape)
 
     # 验证 QR 分解的正确性
-    A_updated = cp.hstack([A[:, :j], A[:, j + 1 :]])
+    A_updated = cp.hstack([A[:, : j - 1], A[:, j:]])
     Q1, R1 = Qd, Rd  # 更新后的 Q 和 R
     A_reconstructed = Q1 @ R1
 
@@ -147,28 +147,28 @@ def test_dqrdec():
 
     这时候出来的R的矩阵形状和原来一致，但最后一列不是空的（计算时候用到），需要手动去掉
     """
-    # Qdp, Rdp = cp.linalg.qr(A, mode="complete")
-    # Qdp = Qdp.astype(cp.float64)
-    # Rdp = Rdp.astype(cp.float64)
+    Qdp, Rdp = cp.linalg.qr(A, mode="complete")
+    Qdp = Qdp.astype(cp.float64)
+    Rdp = Rdp.astype(cp.float64)
 
-    # print(Qdp.shape)
-    # print(Rdp.shape)
+    print(Qdp.shape)
+    print(Rdp.shape)
 
-    # qrupdate.dqrdec(Qdp, Rdp, j)
+    qrupdate.dqrdec(Qdp, Rdp, j)
 
-    # # 去掉R的最后一列
-    # Rdp = Rdp[:, :-1]
+    # 去掉R的最后一列
+    Rdp = Rdp[:, :-1]
 
-    # A_updated = cp.hstack([A[:, :j], A[:, j + 1 :]])
-    # Q1, R1 = Qdp, Rdp  # 更新后的 Q 和 R
-    # A_reconstructed = Q1 @ R1
+    A_updated = cp.hstack([A[:, : j - 1], A[:, j:]])
+    Q1, R1 = Qdp, Rdp  # 更新后的 Q 和 R
+    A_reconstructed = Q1 @ R1
 
-    # # 将结果输出到文件中
-    # cp.savetxt("dqrdec.Af_updated.txt", A_updated)
-    # cp.savetxt("dqrdec.Af_reconstructed.txt", A_reconstructed)
+    # 将结果输出到文件中
+    cp.savetxt("dqrdec.Af_updated.txt", A_updated)
+    cp.savetxt("dqrdec.Af_reconstructed.txt", A_reconstructed)
 
-    # if not cp.allclose(A_updated, A_reconstructed):
-    #     print("dqrdec_full:QR update failed")
+    if not cp.allclose(A_updated, A_reconstructed):
+        print("dqrdec_full:QR update failed")
 
 
 def updating_test_dqrinc():
@@ -223,19 +223,21 @@ def updating_test_dqrinc():
 
 
 def updating_test_dqrincAndDqrdec():
-    m, n, begin = 60, 5, 5
+    m, n, begin = 3000, 5, 5
     # 生成随机矩阵 A
     A_updated = cp.random.rand(m, n).astype(cp.float64)
     # 建一个表格储存误差
     count = 0
     length = 2 * (m - begin) + 1
-    errors = cp.zeros((length, 1))
+    errors1 = cp.zeros((length, 1))
+    errors2 = cp.zeros((length, 1))
+    errors3 = cp.zeros((length, 1))
     ##### 简略QR分解测试 #####
     # 计算QR分解
     Q, R = cp.linalg.qr(A_updated)
     Q = Q.astype(cp.float64)
     R = R.astype(cp.float64)
-    for n in range(begin, m):
+    for n in range(begin, m - 1):
         j = n + 1  # 插入新列的位置
         count += 1
 
@@ -248,17 +250,25 @@ def updating_test_dqrincAndDqrdec():
         # 调用 dqrinc 更新 QR 分解
         Q, R = qrupdate.dqrinc(Q, R, j, x)
 
+        # print(f"Q.shape{Q.shape}")
+
         # 验证 QR 分解的正确性
         A_updated = cp.hstack([A_updated[:, :], x.reshape(-1, 1)])
         A_reconstructed = Q @ R
         # print("finish1")
+        ATA = cp.dot(A_updated.T, A_updated)
+        RTR = cp.dot(R.T, R)
 
         # 计算误差
-        error = cp.linalg.norm(A_updated - A_reconstructed)
-        errors[count] = error
+        error1 = cp.linalg.norm(A_updated - A_reconstructed, 1)
+        error2 = cp.linalg.norm(Q.T @ Q - cp.eye(n + 1), 1)
+        error3 = cp.linalg.norm(ATA - RTR, 1)
+        errors1[count] = error1
+        errors2[count] = error2
+        errors3[count] = error3
         print(f"finish:{count}")
-    for n in range(m, begin, -1):
-        j = n - 1  # 删除列的位置
+    for n in range(m - 1, begin, -1):
+        j = n  # 删除列的位置
         count += 1
 
         # print(f"Q.shape{Q.shape}")
@@ -266,28 +276,53 @@ def updating_test_dqrincAndDqrdec():
 
         # 调用 dqrinc 更新 QR 分解
         Q, R = qrupdate.dqrdec(Q, R, j)
+        # print(f"Q.shape{Q.shape}")
+        # print(f"R.shape{R.shape}")
 
         # 验证 QR 分解的正确性
 
         A_updated = A_updated[:, :-1]
+        # print(f"A_updated.shape{A_updated.shape}")
         A_reconstructed = Q @ R
+        # print(f"A_reconstructed.shape{A_reconstructed.shape}")
         # print("finish1")
+        ATA = cp.dot(A_updated.T, A_updated)
+        RTR = cp.dot(R.T, R)
+        # print(Q.shape)
 
         # 计算误差
-        error = cp.linalg.norm(A_updated - A_reconstructed)
-        errors[count] = error
+        error1 = cp.linalg.norm(A_updated - A_reconstructed, 1)
+        error2 = cp.linalg.norm(Q.T @ Q - cp.eye(n - 1), 1)
+        error3 = cp.linalg.norm(ATA - RTR, 1)
+        errors1[count] = error1
+        errors2[count] = error2
+        errors3[count] = error3
         print(f"finish:{count}")
 
-    errors = cp.asnumpy(errors)
-    print(errors)
-    plt.plot(errors)
+    errors1 = cp.asnumpy(errors1)
+    errors2 = cp.asnumpy(errors2)
+    errors3 = cp.asnumpy(errors3)
+    # print(errors)
+    plt.plot(errors1)
     plt.xlabel("n")
     plt.ylabel("error")
-    plt.savefig("error_plot.png")
+    plt.savefig("1norm_error_plot_A_3000.png")
+    # 清空图像
+    plt.cla()
+    plt.plot(errors2)
+    plt.xlabel("n")
+    plt.ylabel("error")
+    plt.savefig("1norm_error_plot_Q_3000.png")
+    # 清空图像
+    plt.cla()
+    plt.plot(errors3)
+    plt.xlabel("n")
+    plt.ylabel("error")
+    plt.savefig("1norm_error_plot_R_3000.png")
 
 
 # 执行测试
 # test_dqrinc()
 # test_dqrdec()
-updating_test_dqrinc()
-# updating_test_dqrincAndDqrdec()
+# updating_test_dqrinc()
+updating_test_dqrincAndDqrdec()
