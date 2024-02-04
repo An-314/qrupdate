@@ -1,8 +1,10 @@
 import numpy as np
-import dqrtv1, dqrot, dqrqh
+from .dqrtv1 import dqrtv1
+from .dqrqh import dqrqh
+from .dqrot import dqrot
 
 
-def dqrder(m, n, Q, R, j):
+def dqrder( Q, R, j):
     """
     Purpose:
         Updates a QR factorization after deleting a row.
@@ -17,6 +19,9 @@ def dqrder(m, n, Q, R, j):
     j (int): The position of the deleted row.
     """
 
+    m = Q.shape[0]
+    n = R.shape[1]
+
     if m == 1:
         return Q, R
 
@@ -29,10 +34,10 @@ def dqrder(m, n, Q, R, j):
     # Eliminate Q[j, 2:m]
     for k in range(m):
         u[k] = Q[j - 1, k]
-    u, v, w = dqrtv1.dqrtv1(m, u)
+    u, v, w = dqrtv1(m, u)
 
     # Apply rotations to Q
-    Q = dqrot.dqrot("B", m, m, Q, w, v)
+    Q = dqrot("B", m, m, Q, w, v)
     print(Q)
 
     # Form Q1
@@ -42,7 +47,7 @@ def dqrder(m, n, Q, R, j):
         Q[j - 1 : m - 1, : m - 1] = Q[j :, 1 :]
 
     # Apply rotations to R
-    R = dqrqh.dqrqh(m, n, R, w, v)
+    R = dqrqh(m, n, R, w, v)
 
     # Form R1
 

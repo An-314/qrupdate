@@ -1,8 +1,8 @@
 import numpy as np
-import dqhqr, dqrot
+from .dqhqr import dqhqr
+from .dqrot import dqrot
 
-
-def dqrinr(m, n, Q, R, j, x):
+def dqrinr( Q, R, j, x):
     """
     Purpose:
         Updates a QR factorization after inserting a new row.
@@ -18,6 +18,9 @@ def dqrinr(m, n, Q, R, j, x):
     j (int): The position of the new row in R1.
     x (1D array): The row being added.
     """
+
+    m = Q.shape[0]
+    n = R.shape[1]
 
     # Check arguments
     if n < 0 or j < 1 or j > m + 1:
@@ -44,9 +47,9 @@ def dqrinr(m, n, Q, R, j, x):
     R[0] = x
 
     # Retriangularize R
-    R, w, v = dqhqr.dqhqr(m + 1, n, R)
+    R, w, v = dqhqr(m + 1, n, R)
 
     # Apply rotations to Q
-    Q = dqrot.dqrot("F", m + 1, min(m, n) + 1, Q, w, v)
+    Q = dqrot("F", m + 1, min(m, n) + 1, Q, w, v)
 
     return Q, R
