@@ -2,7 +2,7 @@ import numpy as np
 from scipy.linalg import lapack
 
 
-def dch1up(n, R, u):
+def dch1up(R, u):
     """
     Purpose:
         Given an upper triangular matrix R that is a Cholesky
@@ -20,6 +20,7 @@ def dch1up(n, R, u):
     w (1D array): cosine parts of rotations.
     """
 
+    n = R.shape[0]
     w = np.zeros(n)
     v = np.zeros(n)
 

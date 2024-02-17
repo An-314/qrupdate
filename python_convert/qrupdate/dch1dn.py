@@ -2,7 +2,7 @@ import numpy as np
 from scipy.linalg import blas, lapack
 
 
-def dch1dn(n, R, u):
+def dch1dn(R, u):
     """
     purpose:      given an upper triangular matrix R that is a Cholesky
                 factor of a hermitian positive definite matrix A, i.e.
@@ -21,9 +21,11 @@ def dch1dn(n, R, u):
                 info = 1: update violates positive-definiteness.
                 info = 2: R is singular.
     """
+
+    n = R.shape[0]
     # Check for quick return
     if n == 0:
-        return R, None
+        return R
 
     # Check arguments
     info = 0
@@ -37,7 +39,7 @@ def dch1dn(n, R, u):
     # Check for singularity of R
     for i in range(n):
         if R[i, i] == 0:
-            return R, 2
+            return R
 
     # Form R' \ u using BLAS dtrsv
     u = blas.dtrsv(R, u, trans=1, lower=0)
@@ -46,7 +48,7 @@ def dch1dn(n, R, u):
     rho = np.linalg.norm(u)
     rho = 1 - rho**2
     if rho <= 0:
-        return R, 1
+        return R
     rho = np.sqrt(rho)
 
     # Eliminate R' \ u and apply rotations
@@ -63,4 +65,4 @@ def dch1dn(n, R, u):
             R[j, i] = w[j] * R[j, i] - v[j] * ui
             ui = t
 
-    return R, None
+    return R
