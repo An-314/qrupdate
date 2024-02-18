@@ -1,14 +1,15 @@
 import numpy as np
 import sys
-sys.path.append('/home/anzrew/Documents/qrupdate/src/build/lib.linux-x86_64-cpython-310')
+sys.path.append('/home/anzrew/Documents/qrupdate/src/build/lib.linux-x86_64-cpython-311')
 import matplotlib
 matplotlib.use('Agg')  # 设置非交互式后端
 import matplotlib.pyplot as plt
 import qrupdate
 
-print(qrupdate.__doc__)
-print(qrupdate.dqrinc.__doc__)
-print(qrupdate.dqrdec.__doc__)
+def print_para():
+    print(qrupdate.__doc__)
+    print(qrupdate.dqrinr.__doc__)
+    print(qrupdate.dqrder.__doc__)
 
 def test_dqrinc():
     # 设置测试参数
@@ -191,9 +192,148 @@ def updating_test_dqrinc():
     plt.ylabel("error")
     plt.savefig('error_plot_Q.png')
 
-        
+def test_dqrinr():
 
-# 执行测试
-# test_dqrinc()
-test_dqrdec()
-# updating_test_dqrinc()
+    print(qrupdate.dqrinr.__doc__)
+
+
+    print("="*20)
+    print("简化QR分解的dqrinr测试")
+
+    print("-"*20)
+    print("参数设置")
+    # 设置测试参数
+    m, n = 10, 4
+    k = n
+    ldq, ldr = m + 1, m
+    j = 2  # 插入新列的位置
+
+    # 生成随机矩阵 A 和列向量 x
+    A = np.random.rand(m, n).astype(np.float64, order="F")
+    x = np.random.rand(n).astype(np.float64, order="F")
+
+    print(f"m={m}，n={n}")
+
+    print("-"*20)
+    print("测试规模")
+
+    Q, R = np.linalg.qr(A, mode="complete")
+    Q = Q.astype(np.float64, order="F")
+    R = R.astype(np.float64, order="F")
+
+    print(f"A:{A.shape}")
+    print(f"对A进行QR分解，Q:{Q.shape}，R:{R.shape}")
+
+    print("-"*20)
+    print("预处理")
+
+    Q = np.append(Q, np.zeros((1, m)), axis=0)
+    Q = np.append(Q, np.zeros((m + 1, 1)), axis=1)
+    R = np.append(R, np.zeros((1, n)), axis=0)
+
+    print(f"Q:{Q.shape}，R:{R.shape}")
+
+    print("-"*20)
+    print("调用dqrinr函数")
+
+    w = np.zeros(2*n).astype(np.float64, order="F")
+    x_history = np.copy(x)
+    print(f"插入{x}")
+    qrupdate.dqrinr(m,Q,R,j,x,w)
+
+    print("调用成功")
+
+    print("-"*20)
+    print("更新后规模为")
+
+    print(f"Q:{Q.shape}，R:{R.shape}")
+
+    print("-"*20)
+    print("检测结果")
+    A_updated = np.vstack([A[:j-1,:], x_history.reshape(1, -1), A[j-1:,:]])
+    A_reconstructed = Q @ R
+    print("更新后的QR与A增添一行对比")
+    # print("A_updated:")
+    # print(A_updated)
+    # print("A_reconstructed:")
+    # print(A_reconstructed)
+    error = np.allclose(A_updated, A_reconstructed)
+    print(f"结果是否在误差范围内：{error}")
+
+
+def test_dqrder():
+
+    print(qrupdate.dqrder.__doc__)
+
+
+    print("="*20)
+    print("简化QR分解的dqrder测试")
+
+    print("-"*20)
+    print("参数设置")
+    # 设置测试参数
+    m, n = 10, 4
+    k = n
+    ldq, ldr = m + 1, m
+    j = 2  # 插入新列的位置
+
+    # 生成随机矩阵 A 和列向量 x
+    A = np.random.rand(m, n).astype(np.float64, order="F")
+    x = np.random.rand(n).astype(np.float64, order="F")
+
+    print(f"m={m}，n={n}")
+
+    print("-"*20)
+    print("测试规模")
+
+    Q, R = np.linalg.qr(A, mode="complete")
+    Q = Q.astype(np.float64, order="F")
+    R = R.astype(np.float64, order="F")
+
+    print(f"A:{A.shape}")
+    print(f"对A进行QR分解，Q:{Q.shape}，R:{R.shape}")
+
+
+    print("-"*20)
+    print("调用dqrder函数")
+
+    w = np.zeros(2*m).astype(np.float64, order="F")
+    print(f"删除第{j}行")
+    qrupdate.dqrder(Q,R,j,w)
+
+    print("调用成功")
+
+    print("-"*20)
+    print("更新后规模为")
+
+    print(f"Q:{Q.shape}，R:{R.shape}")
+
+    print("-"*20)
+    print("后处理")
+
+    Q = Q[:-1,:-1]
+    R = R[:-1, :]
+
+    print(f"Q:{Q.shape}，R:{R.shape}")
+
+    print("-"*20)
+    print("检测结果")
+    A_updated = np.vstack([A[:j-1,:], A[j:,:]])
+    A_reconstructed = Q @ R
+    print("更新后的QR与A减少一行对比")
+    # print("A_updated:")
+    # print(A_updated)
+    # print("A_reconstructed:")
+    # print(A_reconstructed)
+    error = np.allclose(A_updated, A_reconstructed)
+    print(f"结果是否在误差范围内：{error}")
+
+
+if __name__ == "__main__":
+    # 执行测试
+    # test_dqrinc()
+    # test_dqrdec()
+    # updating_test_dqrinc()
+    # print_para()
+    test_dqrinr()
+    test_dqrder()

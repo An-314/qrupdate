@@ -22,9 +22,6 @@ c
 !f2py intent(in) :: m,n,j,ldq,ldr
 !f2py intent(inout) :: Q,R,x
 !f2py intent(inout) :: w
-!f2py dimension(ldq,*) :: Q
-!f2py dimension(ldr,*) :: R
-!f2py dimension(*) :: x,w
 c purpose:      updates a QR factorization after inserting a new
 c               row.
 c               i.e., given an m-by-m unitary matrix Q, an m-by-n
@@ -48,7 +45,7 @@ c               on exit, x is destroyed.
 c w (out)       a workspace vector of size min(m,n).
 c
       integer m,n,j,ldq,ldr
-      double precision Q(ldq,n+1),R(ldr,n+1),x(m),w(k)
+      double precision Q(ldq,ldr),R(ldr,n),x(n),w(2*n)
       external xerbla,dcopy,dqhqr,dqrot
       integer info,i,k
 c check arguments

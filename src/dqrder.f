@@ -19,12 +19,6 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine dqrder(m,n,Q,ldq,R,ldr,j,w)
-!f2py intent(in) :: m,n,ldq,ldr,j
-!f2py intent(inout) :: Q,R
-!f2py intent(inout) :: w
-!f2py dimension(ldq,*) :: Q
-!f2py dimension(ldr,*) :: R
-!f2py dimension(*) :: w
 c purpose:      updates a QR factorization after deleting a row.
 c               i.e., given an m-by-m orthogonal matrix Q, an m-by-n
 c               upper trapezoidal matrix R and index j in the range
@@ -46,7 +40,7 @@ c j (in)        the position of the deleted row.
 c w (out)       a workspace vector of size 2*m.
 c
       integer m,n,j,ldq,ldr
-      double precision Q(ldq,*),R(ldr,*),w(*)
+      double precision Q(ldq,ldr),R(ldr,n),w(2*m)
       external xerbla,dcopy,dqrtv1,dqrot,dqrqh
       integer info,i,k
 c quick return if possible
