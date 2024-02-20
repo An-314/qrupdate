@@ -8,7 +8,7 @@ import qrupdate
 
 def print_para():
     print(qrupdate.__doc__)
-    print(qrupdate.dqrinr.__doc__)
+    print(qrupdate.dch1up.__doc__)
     print(qrupdate.dqrder.__doc__)
 
 def test_dqrinc():
@@ -203,10 +203,10 @@ def test_dqrinr():
     print("-"*20)
     print("参数设置")
     # 设置测试参数
-    m, n = 10, 4
+    m, n = 10, 10
     k = n
     ldq, ldr = m + 1, m
-    j = 2  # 插入新列的位置
+    j = 11  # 插入新列的位置
 
     # 生成随机矩阵 A 和列向量 x
     A = np.random.rand(m, n).astype(np.float64, order="F")
@@ -259,7 +259,6 @@ def test_dqrinr():
     # print(A_reconstructed)
     error = np.allclose(A_updated, A_reconstructed)
     print(f"结果是否在误差范围内：{error}")
-
 
 def test_dqrder():
 
@@ -329,11 +328,13 @@ def test_dqrder():
     print(f"结果是否在误差范围内：{error}")
 
 
+
+
 if __name__ == "__main__":
     # 执行测试
     # test_dqrinc()
     # test_dqrdec()
     # updating_test_dqrinc()
-    # print_para()
-    test_dqrinr()
-    test_dqrder()
+    print_para()
+    # test_dqrinr()
+    # test_dqrder()

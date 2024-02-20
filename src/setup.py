@@ -11,6 +11,8 @@ src_files = [
     "dqrot.f",
     "dqrqh.f",
     "dqrtv1.f",
+    "dch1dn.f",
+    "dch1up.f",
 ]
 
 # 创建扩展模块，包括链接到 BLAS 和 LAPACK
