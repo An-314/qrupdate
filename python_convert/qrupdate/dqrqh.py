@@ -1,4 +1,4 @@
-import cupy as np
+import numpy as np
 
 
 def dqrqh(m, n, R, c, s):

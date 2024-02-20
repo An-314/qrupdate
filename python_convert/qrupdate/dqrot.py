@@ -1,4 +1,4 @@
-import cupy as np
+import numpy as np
 
 
 def dqrot(dir, m, n, Q, c, s):

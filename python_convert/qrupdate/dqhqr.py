@@ -1,4 +1,4 @@
-import cupy as np
+import numpy as np
 from scipy.linalg import lapack
 
 

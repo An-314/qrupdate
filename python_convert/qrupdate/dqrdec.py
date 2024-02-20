@@ -1,4 +1,4 @@
-import cupy as np
+import numpy as np
 from .dqhqr import dqhqr
 from .dqrot import dqrot
 
