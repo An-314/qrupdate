@@ -5,4 +5,5 @@ src/dist*
 src/*.log
 src/*.egg-info
 test-py/*.txt
+test-py/__pycache__
 *.png

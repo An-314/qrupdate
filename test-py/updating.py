@@ -40,3 +40,22 @@ def deleting_row(Q,R,j):
     R = R.copy(order='C')
     return Q, R
 
+def cholesky_update(R, j, x):
+    """
+    对A的Cholesky分解进行更新，A1=A+x*x.T，返回A1的Cholesky分解
+    """
+    R = R.astype(np.float64, order="F")
+    w = np.zeros(j).astype(np.float64, order="F")
+    qrupdate.dch1up(R, x, w)
+    R = R.copy(order='C')
+    return R
+
+def cholesky_downdate(R, j, x):
+    """
+    对A的Cholesky分解进行降级，A1=A-x*x.T，返回A1的Cholesky分解
+    """
+    R = R.astype(np.float64, order="F")
+    w = np.zeros(j).astype(np.float64, order="F")
+    qrupdate.dch1dw(R, x, w)
+    R = R.copy(order='C')
+    return R
