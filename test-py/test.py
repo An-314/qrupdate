@@ -344,6 +344,8 @@ def test_dch1up():
     R = np.triu(R)
 
     print(f"m={m}")
+    print(f"R:{R}")
+    print(f"A=R^T@R:{R.T@R}")
 
     print("-"*20)
     print("测试规模")
@@ -357,10 +359,19 @@ def test_dch1up():
     print("-"*20)
     print("调用dch1up函数")
 
+    R = R.astype(np.float64, order="F")
     x = np.random.rand(m).astype(np.float64, order="F")
     x_history = np.copy(x)
     print(f"插入{x}")
-    qrupdate.dch1up(R, x, np.zeros(m).astype(np.float64, order="F"))
+
+    print("x@x^T:")
+    print(x_history.reshape(-1, 1) @ x_history.reshape(1, -1))
+
+    w = np.zeros(m).astype(np.float64, order="F")
+    qrupdate.dch1up(R, x, w)
+
+    print(f"R:{R}")
+
 
     print("调用成功")
 
@@ -373,14 +384,78 @@ def test_dch1up():
     print("检测结果")
     A_updated = A + x_history.reshape(-1, 1) @ x_history.reshape(1, -1)
     A_reconstructed = R.T @ R
-    print("更新后的QR与A增添一行对比")
+    print("更新后")
     # print("A_updated:")
-    # print(A_updated)
+    print(A_updated)
     # print("A_reconstructed:")
-    # print(A_reconstructed)
+    print(A_reconstructed)
     error = np.allclose(A_updated, A_reconstructed)
     print(f"结果是否在误差范围内：{error}")
 
+def test_dch1dn():
+
+    print(qrupdate.dch1dn.__doc__)
+
+    print("="*20)
+    print("dch1dn测试")
+
+    print("-"*20)
+    print("参数设置")
+    # 设置测试参数
+    m = 5
+
+    # 生成一个上三角矩阵 R
+    R = np.random.rand(m, m).astype(np.float64, order="F")
+    R = np.triu(R)
+
+    print(f"m={m}")
+    print(f"R:{R}")
+    print(f"A=R^T@R:{R.T@R}")
+
+    print("-"*20)
+    print("测试规模")
+
+    # A=R^T@R
+    A = R.T @ R
+
+    print(f"A:{A.shape}")
+    print(f"A的Cholesky分解：R:{R.shape}")
+
+    print("-"*20)
+    print("调用dch1up函数")
+
+    R = R.astype(np.float64, order="F")
+    x = np.random.rand(m).astype(np.float64, order="F")
+    x_history = np.copy(x)
+    print(f"插入{x}")
+
+    print("x@x^T:")
+    print(x_history.reshape(-1, 1) @ x_history.reshape(1, -1))
+
+    w = np.zeros(m).astype(np.float64, order="F")
+    qrupdate.dch1dn(R, x, w, 0)
+
+    print(f"R:{R}")
+
+
+    print("调用成功")
+
+    print("-"*20)
+    print("更新后规模为")
+
+    print(f"R:{R.shape}")
+
+    print("-"*20)
+    print("检测结果")
+    A_updated = A - x_history.reshape(-1, 1) @ x_history.reshape(1, -1)
+    A_reconstructed = R.T @ R
+    print("更新后")
+    # print("A_updated:")
+    print(A_updated)
+    # print("A_reconstructed:")
+    print(A_reconstructed)
+    error = np.allclose(A_updated, A_reconstructed)
+    print(f"结果是否在误差范围内：{error}")
 
 if __name__ == "__main__":
     # 执行测试
@@ -390,4 +465,4 @@ if __name__ == "__main__":
     # print_para()
     # test_dqrinr()
     # test_dqrder()
-    test_dch1up()
+    test_dch1dn()
