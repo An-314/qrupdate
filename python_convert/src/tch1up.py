@@ -11,9 +11,11 @@ R=(linalg.cholesky(a))
 u=np.mat([[0],[0],[0],[1]])
 print(a + np.dot(u,u.T))
 
+u=np.array([0,0,0,1])
 R=dch1up.dch1up(R,u)
 print(np.dot(R.T,R))
 
+u=np.mat([[0],[0],[0],[1]])
 print(linalg.cholesky(a + np.dot(u,u.T)))
 print(R)
 
@@ -23,9 +25,11 @@ R=(linalg.cholesky(a))
 u=np.mat([[1],[2],[3]])
 print(a + np.dot(u,u.T))
 
+u=np.array([1,2,3])
 R=dch1up.dch1up(R,u)
 print(np.dot(R.T,R))
 
+u=np.mat([[1],[2],[3]])
 print(linalg.cholesky(a + np.dot(u,u.T)))
 print(R)
 

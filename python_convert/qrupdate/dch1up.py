@@ -52,7 +52,6 @@ def dch1up(R, u):
             t = np.dot(rot, t)
             ui = t[i, :]
             t = np.r_[t[:i, :], t[i + 1:, :]]
-            t = t.A
             t = t.ravel()
             R[:i, i] = t[:i]
 
