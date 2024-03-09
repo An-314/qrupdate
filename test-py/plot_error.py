@@ -1,7 +1,8 @@
 from pyexpat.model import XML_CTYPE_CHOICE
 import numpy as np
 import matplotlib
-matplotlib.use('Agg')  # 设置非交互式后端
+
+matplotlib.use("Agg")  # 设置非交互式后端
 import matplotlib.pyplot as plt
 import updating
 
@@ -127,7 +128,7 @@ def polt_error_r(m, n, times):
 
 def polt_error_d(m, n, times):
     """
-    对一个矩阵不断插入最后一行，然后删除最后一行，画出QR分解的更新误差，绘制：
+    对一个矩阵不断插入最后一列，然后删除最后一列，画出QR分解的更新误差，绘制：
     1. A的1-范数误差
     2. Q.T@Q与1的1-范数误差
     3. A.T@A与R.T@R的1-范数误差
@@ -164,10 +165,9 @@ def polt_error_d(m, n, times):
         j += 1
         count += 1
         # 生成随机行向量 x
-        x = np.random.rand(n).astype(np.float64)
-        x_history = np.copy(x)
+        x = np.random.rand(m).astype(np.float64)
         # 调用 dqrinc 更新 QR 分解
-        Q, R = updating.appending_row(Q, R, j, x)
+        Q, R = updating.appending_column(Q, R, j, x)
         # 验证 QR 分解的正确性
         A_updated = np.vstack([A_updated[:j-1,:], x_history.reshape(1, -1), A_updated[j-1:,:]])
         A_reconstructed = Q @ R
@@ -191,7 +191,7 @@ def polt_error_d(m, n, times):
         j -= 1
         count += 1
         # 调用 dqrinc 更新 QR 分解
-        Q, R = updating.deleting_row(Q, R, j)
+        Q, R = updating.deleting_column(Q, R, j)
         # 验证 QR 分解的正确性
         A_updated = np.vstack([A_updated[:j-1,:], A_updated[j:,:]])
         A_reconstructed = Q @ R
