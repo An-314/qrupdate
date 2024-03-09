@@ -166,6 +166,7 @@ def polt_error_d(m, n, times):
         count += 1
         # 生成随机行向量 x
         x = np.random.rand(m).astype(np.float64)
+        x_history = np.copy(x)
         # 调用 dqrinc 更新 QR 分解
         Q, R = updating.appending_column(Q, R, j, x)
         # 验证 QR 分解的正确性
