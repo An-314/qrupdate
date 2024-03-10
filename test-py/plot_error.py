@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use("Agg")  # 设置非交互式后端
 import matplotlib.pyplot as plt
 import updating
+import updating_fix
 
 def polt_error_r(m, n, times):
     """
