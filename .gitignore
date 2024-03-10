@@ -10,3 +10,4 @@ src/dist
 src/qrupdate.egg-info
 __pycache__
 *.png
+test-py/*.png

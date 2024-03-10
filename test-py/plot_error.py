@@ -59,7 +59,7 @@ def polt_error_ch(n, times):
         errors1[count] = error1
         errors2[count] = error2
         print(f"finish:{count}")
-    for i in range(times):
+    for i in range(times - 10):
         count += 1
         # 生成随机行向量 x
         x = x_mat[times- (count - times), :]
