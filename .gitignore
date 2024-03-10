@@ -5,3 +5,4 @@ src/build*
 test_py/*.txt
 python_convert/qrupdate/__pycache__
 python_convert/src/__pycache__
+/__pycache__/

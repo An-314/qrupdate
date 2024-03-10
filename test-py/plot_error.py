@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from dch1up import dch1up
 from dch1dn import dch1dn
 
+
 def polt_error_ch(n, times):
     """
     对一个矩阵不断插入最后一行，然后删除最后一行，画出QR分解的更新误差，绘制：
@@ -25,6 +26,7 @@ def polt_error_ch(n, times):
     # 生成随机矩阵 R
     R_updated = np.random.rand(n, n).astype(np.float64)
     R_updated = np.triu(R_updated)
+    print(R_updated)
     # 建一个表格储存误差
     count = 0
     length = 2 * times + 1
@@ -49,18 +51,20 @@ def polt_error_ch(n, times):
         A_reconstructed = R_updated.T @ R_updated
         L_reconstructed = np.linalg.cholesky(A_updated)
         R_reconstructed = L_reconstructed.T
-        # print(R_reconstructed)
-        # print(R_updated)
+        # print("A_reconstructed")
+        # print(A_reconstructed)
+        # print("A_updated")
+        # print(A_updated)
         # 计算误差
         error1 = np.linalg.norm(A_updated - A_reconstructed, 1)
         error2 = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated, 1)
         errors1[count] = error1
         errors2[count] = error2
         print(f"finish:{count}")
-    for i in range(190):
+    for i in range(times - 2):
         count += 1
         # 生成随机行向量 x
-        x = x_mat[times- (count - times), :]
+        x = x_mat[times - (count - times), :]
         x_history = np.copy(x)
         # 调用 dqrinc
         R_updated = dch1dn(R_updated, x)
@@ -69,8 +73,10 @@ def polt_error_ch(n, times):
         A_reconstructed = R_updated.T @ R_updated
         L_reconstructed = np.linalg.cholesky(A_updated)
         R_reconstructed = L_reconstructed.T
-        # print(R_reconstructed)
-        # print(R_updated)
+        # print("A_reconstructed")
+        # print(A_reconstructed)
+        # print("A_updated")
+        # print(A_updated)
         # 计算误差
         error1 = np.linalg.norm(A_updated - A_reconstructed, 1)
         error2 = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated, 1)
@@ -79,8 +85,8 @@ def polt_error_ch(n, times):
         print(f"finish:{count}")
     # print(errors)
     # 截取后200个数据
-    errors1 = errors1[50:351]
-    errors2 = errors2[50:351]
+    # errors1 = errors1[50:351]
+    # errors2 = errors2[50:351]
     plt.plot(errors1)
     plt.xlabel("n")
     plt.ylabel("error")
