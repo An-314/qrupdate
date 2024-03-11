@@ -1,4 +1,5 @@
 from os import error
+import time as tm
 import numpy as np
 import matplotlib
 
@@ -7,6 +8,7 @@ import matplotlib.pyplot as plt
 import updating
 import qrupdating
 import qrupdating_fix
+
 
 def polt_error_ch(n, times):
     """
@@ -35,100 +37,138 @@ def polt_error_ch(n, times):
     errors2_qr = np.zeros((length, 1))
     errors1_qr_fix = np.zeros((length, 1))
     errors2_qr_fix = np.zeros((length, 1))
+    time = np.zeros((length, 1))
+    time_qr = np.zeros((length, 1))
+    time_qr_fix = np.zeros((length, 1))
+    cumulate_time = np.zeros((length, 1))
+    cumulate_time_qr = np.zeros((length, 1))
+    cumulate_time_qr_fix = np.zeros((length, 1))
+
     # 计算 A = R.T @ R
     A_updated = np.dot(R_updated.T, R_updated)
     count = 0
     # 用一个矩阵存x
     x_mat = np.zeros((times, n))
-    # 插入新列的位置 
+    # 插入新列的位置
     for i in range(times):
         count += 1
         # 生成随机行向量 x
         x = np.random.rand(n).astype(np.float64)
         x_history = np.copy(x)
-        x_mat[count - 1, :] = x_history
+        x_before = np.copy(x)
         # 调用 dch1up
+        x_mat[count - 1, :] = x_history
         R_update_before = np.copy(R_updated)
+        R_update_history = np.copy(R_updated)
+        time1 = tm.time()
         R_updated = updating.cholesky_update(R_update_before, n, x)
+        time2 = tm.time()
         R_updated_qr = qrupdating.dch1up(R_update_before, x)
-        R_updated_qr_fix = qrupdating_fix.dch1up(R_update_before, x)
+        time3 = tm.time()
+        R_updated_qr_fix = qrupdating_fix.dch2up(R_update_history, x_history)
+        time4 = tm.time()
         # 验证更新后的 R
-        A_updated = A_updated + x_history.reshape(-1, 1) @ x_history.reshape(1, -1)
+        A_updated = A_updated + x_before.reshape(-1, 1) @ x_before.reshape(1, -1)
         A_reconstructed = R_updated.T @ R_updated
         A_reconstructed_qr = R_updated_qr.T @ R_updated_qr
         A_reconstructed_qr_fix = R_updated_qr_fix.T @ R_updated_qr_fix
-        L_reconstructed = np.linalg.cholesky(A_updated)
-        R_reconstructed = L_reconstructed.T
-        # print(R_reconstructed)
-        # print(R_updated)
+        # L_reconstructed = np.linalg.cholesky(A_updated)
+        # R_reconstructed = L_reconstructed.T
         # 计算误差
         error1 = np.linalg.norm(A_updated - A_reconstructed, 1)
         error1_qr = np.linalg.norm(A_updated - A_reconstructed_qr, 1)
         error1_qr_fix = np.linalg.norm(A_updated - A_reconstructed_qr_fix, 1)
-        error2 = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated, 1)
-        error2_qr = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated_qr, 1)
-        error2_qr_fix = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated_qr_fix, 1)
+        # error2 = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated, 1)
+        # error2_qr = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated_qr, 1)
+        # error2_qr_fix = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated_qr_fix, 1)
+        # 绘制误差图
         errors1[count] = error1
         errors1_qr[count] = error1_qr
         errors1_qr_fix[count] = error1_qr_fix
-        errors2[count] = error2
-        errors2_qr[count] = error2_qr
-        errors2_qr_fix[count] = error2_qr_fix
+        # errors2[count] = error2
+        # errors2_qr[count] = error2_qr
+        # errors2_qr_fix[count] = error2_qr_fix
+        time[count] = time2 - time1
+        time_qr[count] = time3 - time2
+        time_qr_fix[count] = time4 - time3
+        cumulate_time[count] = cumulate_time[count - 1] + time[count]
+        cumulate_time_qr[count] = cumulate_time_qr[count - 1] + time_qr[count]
+        cumulate_time_qr_fix[count] = (
+            cumulate_time_qr_fix[count - 1] + time_qr_fix[count]
+        )
         print(f"finish:{count}")
     for i in range(times - 10):
         count += 1
         # 验证更新后的 R
-        x = x_mat[times- (count - times), :]
+        x = x_mat[times - (count - times), :]
         x_history = np.copy(x)
+        x_before = np.copy(x)
         # 调用 dch1dn
         R_update_before = np.copy(R_updated)
+        R_update_history = np.copy(R_updated)
+        time1 = tm.time()
         R_updated = updating.cholesky_downdate(R_update_before, n, x)
+        time2 = tm.time()
         R_updated_qr = qrupdating.dch1dn(R_update_before, x)
-        R_updated_qr_fix = qrupdating_fix.dch1dn(R_update_before, x)
+        time3 = tm.time()
+        R_updated_qr_fix = qrupdating_fix.dch2dn(R_update_history, x_history)
+        time4 = tm.time()
         # 验证更新后的 R
-        A_updated = A_updated - x_history.reshape(-1, 1) @ x_history.reshape(1, -1)
+        A_updated = A_updated - x_before.reshape(-1, 1) @ x_before.reshape(1, -1)
         A_reconstructed = R_updated.T @ R_updated
         A_reconstructed_qr = R_updated_qr.T @ R_updated_qr
         A_reconstructed_qr_fix = R_updated_qr_fix.T @ R_updated_qr_fix
-        L_reconstructed = np.linalg.cholesky(A_updated)
-        R_reconstructed = L_reconstructed.T
+        # L_reconstructed = np.linalg.cholesky(A_updated)
+        # R_reconstructed = L_reconstructed.T
         # 计算误差
         error1 = np.linalg.norm(A_updated - A_reconstructed, 1)
-        error2 = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated, 1)
+        # error2 = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated, 1)
         error1_qr = np.linalg.norm(A_updated - A_reconstructed_qr, 1)
-        error2_qr = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated_qr, 1)
+        # error2_qr = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated_qr, 1)
         error1_qr_fix = np.linalg.norm(A_updated - A_reconstructed_qr_fix, 1)
-        error2_qr_fix = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(R_updated_qr_fix, 1)
+        # error2_qr_fix = np.linalg.norm(R_reconstructed, 1) - np.linalg.norm(
+        # R_updated_qr_fix, 1
+        # )
+        # 绘制误差图
         errors1[count] = error1
-        errors2[count] = error2
+        # errors2[count] = error2
         errors1_qr[count] = error1_qr
-        errors2_qr[count] = error2_qr
+        # errors2_qr[count] = error2_qr
         errors1_qr_fix[count] = error1_qr_fix
-        errors2_qr_fix[count] = error2_qr_fix
+        # errors2_qr_fix[count] = error2_qr_fix
+        time[count] = time2 - time1
+        time_qr[count] = time3 - time2
+        time_qr_fix[count] = time4 - time3
+        cumulate_time[count] = cumulate_time[count - 1] + time[count]
+        cumulate_time_qr[count] = cumulate_time_qr[count - 1] + time_qr[count]
+        cumulate_time_qr_fix[count] = (
+            cumulate_time_qr_fix[count - 1] + time_qr_fix[count]
+        )
         print(f"finish:{count}")
     # print(errors)
     # 截取后200个数据
-    errors1 = errors1[10:2 * times - 10]
-    errors2 = errors2[10:2 * times - 10]
-    errors1_qr = errors1_qr[10:2 * times - 10]
-    errors2_qr = errors2_qr[10:2 * times - 10]
-    errors1_qr_fix = errors1_qr_fix[10:2 * times - 10]
-    errors2_qr_fix = errors2_qr_fix[10:2 * times - 10]
+    errors1 = errors1[10 : 2 * times - 10]
+    errors2 = errors2[10 : 2 * times - 10]
+    errors1_qr = errors1_qr[10 : 2 * times - 10]
+    errors2_qr = errors2_qr[10 : 2 * times - 10]
+    errors1_qr_fix = errors1_qr_fix[10 : 2 * times - 10]
+    errors2_qr_fix = errors2_qr_fix[10 : 2 * times - 10]
     plt.plot(errors1)
     plt.plot(errors1_qr)
     plt.plot(errors1_qr_fix)
     plt.xlabel("n")
     plt.ylabel("error")
-    plt.legend(["f2py","python", "python_fix"])
+    plt.legend(["f2py", "python", "python_fix"])
     plt.title("1-norm error of A_updated and A_reconstructed")
     plt.savefig(f"1norm_error_plot_A_ch.png")
     # 清空图像
     plt.cla()
     plt.plot(errors2)
     plt.plot(errors2_qr)
+    plt.plot(errors2_qr_fix)
     plt.xlabel("n")
     plt.ylabel("error")
-    plt.legend(["f2py","python", "python_fix"])
+    plt.legend(["f2py", "python", "python_fix"])
     plt.title("1-norm error of R and R_updated")
     plt.savefig(f"1norm_error_plot_R_updated_ch.png")
     # 清空图像
@@ -179,6 +219,36 @@ def polt_error_ch(n, times):
     plt.legend(["python_fix"])
     plt.title("1-norm error of R and R_updated")
     plt.savefig(f"1norm_error_plot_R_updated_ch_python_fix.png")
+    # 清空图像
+    plt.cla()
+    plt.plot(time[:times])
+    # plt.plot(time_qr[:times])
+    plt.plot(time_qr_fix[:times])
+    plt.xlabel("n")
+    plt.ylabel("time")
+    plt.legend(["f2py", "python_fix"])
+    plt.title("time of updating")
+    plt.savefig(f"time_plot_ch_add.png")
+    # 清空图像
+    plt.cla()
+    plt.plot(time[times + 1 : 2 * times - 10])
+    # plt.plot(time_qr[times + 1 :2 * times - 10])
+    plt.plot(time_qr_fix[times + 1 : 2 * times - 10])
+    plt.xlabel("n")
+    plt.ylabel("time")
+    plt.legend(["f2py", "python_fix"])
+    plt.title("time of downdating")
+    plt.savefig(f"time_plot_ch_delete.png")
+    # 清空图像
+    plt.cla()
+    plt.plot(cumulate_time[: 2 * times - 10])
+    # plt.plot(cumulate_time_qr)
+    plt.plot(cumulate_time_qr_fix[: 2 * times - 10])
+    plt.xlabel("n")
+    plt.ylabel("time")
+    plt.legend(["f2py", "python_fix"])
+    plt.title("cumulate time of updating")
+    plt.savefig(f"cumulate_time_plot_ch.png")
 
 
-polt_error_ch(100, 200)
+polt_error_ch(100, 100)
