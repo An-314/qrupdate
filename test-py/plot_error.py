@@ -6,6 +6,8 @@ matplotlib.use("Agg")  # 设置非交互式后端
 import matplotlib.pyplot as plt
 from dch1up import dch1up
 from dch1dn import dch1dn
+from dch2up import dch2up
+from dch2dn import dch2dn
 
 
 def polt_error_ch(n, times):
@@ -45,7 +47,7 @@ def polt_error_ch(n, times):
         x_history = np.copy(x)
         x_mat[count - 1, :] = x_history
         # 调用 dqrinc
-        R_updated = dch1up(R_updated, x)
+        R_updated = dch2up(R_updated, x)
         # 验证更新后的 R
         A_updated = A_updated + x_history.reshape(-1, 1) @ x_history.reshape(1, -1)
         A_reconstructed = R_updated.T @ R_updated
@@ -61,13 +63,13 @@ def polt_error_ch(n, times):
         errors1[count] = error1
         errors2[count] = error2
         print(f"finish:{count}")
-    for i in range(times - 2):
+    for i in range(times - 10):
         count += 1
         # 生成随机行向量 x
         x = x_mat[times - (count - times), :]
         x_history = np.copy(x)
         # 调用 dqrinc
-        R_updated = dch1dn(R_updated, x)
+        R_updated = dch2dn(R_updated, x)
         # 验证更新后的 R
         A_updated = A_updated - x_history.reshape(-1, 1) @ x_history.reshape(1, -1)
         A_reconstructed = R_updated.T @ R_updated
