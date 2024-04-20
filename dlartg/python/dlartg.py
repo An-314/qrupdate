@@ -36,8 +36,8 @@ def dlartg(f, g):
 
 
 def batched_dlartg(f, g):
-    cs = np.zeros_like(g, dtype=np.float64)  # 初始化 cs 数组
-    sn = np.zeros_like(f, dtype=np.float64)  # 初始化 sn 数组
+    cs = np.zeros_like(g, dtype=np.float32)
+    sn = np.zeros_like(f, dtype=np.float32)
 
     mask_g_zero = g == 0
     cs[mask_g_zero] = 1
@@ -72,7 +72,7 @@ def batched_dlartg(f, g):
 
 def test():
     # 随机生成一个1000 - 10000之间的float32长为100的数组
-    f = np.float32(np.random.uniform(1000, 10000))
+    f = np.float32(np.random.uniform(100, 1000))
     # 随机生成一个0 - 100之间的float64
     g = np.float32(np.random.uniform(0, 1))
     print(f, g)
@@ -86,7 +86,7 @@ def test_batched():
     # 随机生成一个1000 - 10000之间的float64长为100的数组
     f = np.random.uniform(1000, 10000, 100)
     # 随机生成一个0 - 100之间的float64
-    g = np.random.uniform(0, 1, 100)
+    g = np.random.uniform(1000, 10000, 100)
     print(f, g)
     cs1, sn1, cs3, sn3 = np.zeros(100), np.zeros(100), np.zeros(100), np.zeros(100)
     for i in range(100):
