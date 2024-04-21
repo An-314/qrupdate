@@ -69,6 +69,31 @@ def batched_dlartg(f, g):
 
     return cs, sn
 
+def dlartg_b(fi,gi):
+    f = np.copy(fi)
+    g = np.copy(gi)
+    c = np.zeros(f.shape, dtype=np.float32)
+    s = np.zeros(f.shape, dtype=np.float32)
+    t = np.zeros(f.shape, dtype=np.float32)
+    g0 = (g == 0)
+    f0 = (f == 0)
+    c[g0] = 1
+    s[g0] = 0
+    c[f0] = 0
+    s[f0] = 1
+    fg = (np.abs(g) > np.abs(f)) & (g != 0) & (f != 0)
+    gf = (np.abs(g) <= np.abs(f)) & (g != 0) & (f != 0)
+    
+    t[fg] = f[fg]/g[fg]
+    s[fg] = 1/np.sqrt(1+t[fg]**2)
+    c[fg] = s[fg]*t[fg]
+
+    t[gf] = g[gf]/f[gf]
+    c[gf] = 1/np.sqrt(1+t[gf]**2)
+    s[gf] = c[gf]*t[gf]
+
+    return c,s
+
 
 def test():
     # 随机生成一个1000 - 10000之间的float32长为100的数组
@@ -91,7 +116,7 @@ def test_batched():
     cs1, sn1, cs3, sn3 = np.zeros(100), np.zeros(100), np.zeros(100), np.zeros(100)
     for i in range(100):
         cs1[i], sn1[i], _ = lapack.dlartg(f[i], g[i])
-    cs2, sn2 = batched_dlartg(f, g)
+    cs2, sn2 = dlartg_b(f, g)
     for i in range(100):
         cs3[i], sn3[i] = dlartg(f[i], g[i])
     # 绘制误差图
